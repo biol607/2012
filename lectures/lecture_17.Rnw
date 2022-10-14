@@ -1,0 +1,450 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 17 - plyr and ANOVA
+%%%   
+%%%
+%%% Last Modified 10/29/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<set-options, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_17.R")
+
+opts_chunk$set(size = "footnotesize")
+opts_chunk$set(fig.align = "center")
+opts_chunk$set(out.height="0.55\\textwidth")
+opts_chunk$set(out.width="0.55\\textwidth")
+opts_chunk$set(fig.height=5)
+opts_chunk$set(fig.width=5)
+opts_chunk$set(tidy=FALSE)
+opts_chunk$set(prompt=FALSE)
+opts_chunk$set(warning=FALSE)
+opts_chunk$set(comment="#")
+
+par(mar=c(5,4,2,2))
+@
+
+<<lecture17prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge Handling Categorical Predictors: plyr, ANOVA, and more
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Group Properties: Kelp}
+\begin{columns}
+\column{0.5\paperwidth}
+ \begin{itemize}
+  \item Kelp sampled at multiple sites annually \\ \hfill \\
+ \item At each transect, holdfast diameter and \# of fronds counted
+ \end{itemize}
+\column{0.5\paperwidth}
+ \includegraphics[width=0.8\textwidth]{./pics-15/Giant_kelp_adult.jpeg}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How can we get quick summaries by site?, year, or both?}
+<<kelpHead, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{For loops for Summarization by Site}
+<<kelpAggregateFor, eval=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Split, Apply, Combine Strategy}
+ \includegraphics[width=0.7\textwidth]{./pics-17/split.jpg} \\
+ \tiny Wickham 2011
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ddply from Hadley Wickham's plyr library}
+<<kelpMean, size="small">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ddply from Hadley Wickham's plyr library}
+<<kelpMean2>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Multiple Groups \& ddply}
+<<kelpMean3>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Multiple Groups \& ddply}
+<<kelpMean4, echo=FALSE, out.width="0.7\\textwidth", out.height="0.5\\textwidth", fig.height=5, fig.width=7>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Complex Functions \& ddply}
+<<kelpMeanComplex>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Complex Functions \& ddply}
+<<kelpMeanComplexPlot2, out.width="0.9\\textwidth", out.height="0.45\\textwidth", fig.height=5, fig.width=10, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Correlation!}
+\begin{columns}
+\column{0.5\paperwidth}
+ \begin{itemize}
+  \item Evaluate the correlation between fronds and holdfasts by site and year
+  \item Plot it
+  \item Extra: include the SE of the correlation visually
+ \end{itemize}
+\column{0.5\paperwidth}
+ \includegraphics[width=0.8\textwidth]{./pics-15/Giant_kelp_adult.jpeg}
+\end{columns}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Correlation!}
+<<kelpCor>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Correlation!}
+<<kelpCor_plot, out.width="0.9\\textwidth", out.height="0.45\\textwidth", fig.height=5, fig.width=10, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Many plyr Functions}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{./pics-17/plyr.jpg} \\ \hfill \\
+  Also r*ply to replicate an action and return an object.  Great for simulation. \\ \hfill \\
+  See also {\tt colwise} and {\tt each} for everyday use!
+ \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Categorical Predictors: Gene Expression and Mental Disorders}
+\begin{center}
+ \includegraphics[width=0.3\textwidth]{./pics-17/neuron_label.jpeg}
+ \includegraphics[width=0.4\textwidth]{./pics-17/myelin.jpeg} \\
+ \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Categorical Predictors}
+<<load_anova_data, echo=FALSE>>=
+@
+<<boxplotBrain, echo=FALSE>>=
+@
+How do we determine the importance of categorical predictors?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Aside: Reordering Factors}
+<<brainReorder>>=
+@
+<<boxplotBrain, echo=FALSE>>=
+@
+How do we determine the importance of categorical predictors?
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Categorical Predictors Ubiquitous}
+\begin{itemize}
+ \item Treatments in an Experiment
+ \item Spatial groups - plots, Sites, States, etc.
+ \item Individual sampling units 
+ \item Temporal groups - years, seasons, months
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Traditional Way to Think About Categories}
+<<brainGene_plot, echo=FALSE>>=
+@
+What is the variance between groups v. within groups?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But How is the Model Fit?}
+<<brainGene_points, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But How is the Model Fit?}
+<<brainGene_points_fit, echo=FALSE>>=
+@
+\pause Underlying linear model with control = intercept, dummy variable for bipolar
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But How is the Model Fit?}
+<<brainGene_points_fit_01, echo=FALSE>>=
+@
+Underlying linear model with control = intercept, dummy variable for bipolar
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But How is the Model Fit?}
+<<brainGene_points_fit_2, echo=FALSE>>=
+@
+Underlying linear model with control = intercept, dummy variable for schizo
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Different Ways to Write a Categorical Model}
+$$ y_{ij} = \bar{y} + (\bar{y}_{i} - \bar{y}) + ({y}_{ij} - \bar{y}_{i}) $$
+\pause
+$$ y_{ij} = \mu + \alpha_{i} + \epsilon_{ij}, \qquad \epsilon_{ij} \sim N(0, \sigma^{2} ) $$
+\pause
+$$ y_{j} = \beta_{0} + \sum \beta_{i}x_{i} + \epsilon_{j}, \qquad x_{i} = 0,1  $$
+\pause
+\hfill \\
+$x_{i}$ inidicates presence/abscence of a category \\
+\hfill \\ \pause
+Traditional ANOVA special case where all $x_{i}$ are orthogonal \\
+\hfill \\ \pause
+Often one category set to $\beta_{0}$ for ease of fitting
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{This is a Linear Model}
+<<brainGene_lm, size="normalsize">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Hypothesis Testing with a Categorical Model: ANOVA}
+$$H_{0} = \mu_{1} = \mu{2} = \mu{3} = ...$$
+\pause
+\begin{center} OR \end{center}
+$$ \beta_{0} = \mu, \qquad \beta_{i} = 0 $$
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Assumptions of Ordinary Least Squares Regression}
+\large
+ \begin{itemize}
+  \item Independence of data points
+  \item Normality within groups
+  \item Homoscedasticity (homogeneity of variance)
+ \end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{F-Test to Compare }
+
+$SS_{Total} = SS_{Between} + SS_{Within}$ \\ 
+
+\begin{center}
+$SS_{Between} = \sum_{i}\sum_{j}(\bar{Y_{i}} - \bar{Y})^{2}$, df=k-1\\ \hfill \\
+$SS_{Within} = \sum_{i}\sum_{j}(Y_{ij} - \bar{Y_{i}})^2$, df=n-k\\ \hfill \\
+
+\end{center}
+
+\pause
+To compare them, we need to correct for different DF.  This is the Mean Square.\\ 
+\hfill \\
+MS = SS/DF, e.g, $MS_{W} = \frac{SS_{W}}{n-k}$\\
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{F-Test to Compare }
+\begin{large}
+\begin{center}$F = \frac{MS_{B}}{MS_{W}}$ with DF=k-1,n-k \\ \end{center}
+\hfill \\
+\end{large}
+\pause
+(note similarities to $SS_{R}$ and $SS_{E}$ notation of regression)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ANOVA}
+<<brainGene_anova>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Inspecting Assumptions}
+<<brainGene_assumptions>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Levene's Test of Homogeneity of Variance}
+<<brainGene_levene>>=
+@
+
+Levene's test robust to departures from normality
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What do I do if I Violate Assumptions?}
+\begin{itemize}
+ \item Nonparametric Kruskal-Wallace (uses ranks)
+ \item Transform?
+ \item GLM with ANODEV
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Kruskal Wallace Test}
+<<brainGene_kruskal>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Daphnia Resistance}
+ \begin{columns}
+ \column{0.5\paperwidth}
+ \begin{itemize}
+  \item Plot the mean and SE of the data by group
+ \item Evaluate whether the data is appropriate for ANOVA
+ \item Fit an ANOVA and check diagnostics
+ \item Evaluate results \& compare to Kruskal-Wallace and a glm with a Gamma distribution 
+ \end{itemize}
+ 
+ \column{0.5\paperwidth}
+   \includegraphics[width=0.8\textwidth]{./pics-17/daphnia500.jpeg}\\
+
+
+ \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Daphnia Data}
+<<daphnia_load, echo=FALSE>>=
+@
+<<daphnia_plot_1, echo=FALSE>>=
+@
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Daphnia Means}
+<<daphnia_plot_2, eval=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Daphnia Means}
+<<daphnia_plot_2, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How about HOV?}
+<<daphnia_levene>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ANOVA shows an Effect}
+<<daphnia_anova>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{KW shows an Effect}
+<<daphnia_kruskal, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bad GLM Does Not}
+<<daphnia_glm, echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Diagnostics Also Good}
+<<daphnia_diagnostics, echo=FALSE>>=
+@
+\end{frame}
+
+\end{document}

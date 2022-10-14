@@ -1,0 +1,384 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 27  Bayesian Statistics
+%%%   
+%%%
+%%% Last Modified 12/4/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\usepackage{colortbl}
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<setoptions, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_27.R")
+library(MASS)
+
+@
+
+<<lecture27prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\begin{center}
+\includegraphics[height=0.7\textheight]{./pics-27/bayes.png}\\
+\begin{Large} A Brief Introduction to Bayesian Statistics\end{Large}
+\end{center}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Frameworks of Statistical Inference}
+
+\begin{itemize}
+ \item Frequentist Hypothesis Testing: Evaluate the probability of observing the data, or more extreme data, given that the a hypothesis is true assuming that there is a single fixed True value for each parameter.
+ \\ \hfill \\ \pause
+ \item Likelihood \& Information Theoretic: Given the data at hand, compare multiple alternative hypotheses and evaluate the relative weight of evidence for each.  Parameters again assumed to have True values.
+ \\ \hfill \\ \pause
+ \item Bayesian: Using prior information and data, evaluate the degree of belief in specific hypotheses, recognizing that data is one realization of some distribution of a parameter.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bayes Theorem}
+
+\begin{center}
+\includegraphics[height=0.8\textheight]{./pics-27/neon_bayes_theorem.jpeg}\\
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bayes Theorem}
+\large $$ p(Hypothesis | Data) = \frac{P(Data | Hypothesis)p(Hypothesis)}{p(Data)} $$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bayes Theorem}
+\Huge $$ p(\theta | X) = \frac{p(X | \theta)P(\theta)}{p(X)} $$
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bayes Theorem in Action}
+\begin{center}\includegraphics[height=0.7\textheight]{./pics-27/frequentists_vs_bayesians.png}\\ \end{center}
+\url{http://xkcd.com/1132/}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bayes Theorem in Action}
+$$ p(Sun Explodes | Yes) = \frac{p(Yes | Sun Explodes)p(Sun Explodes)}{p(Yes)} $$
+\pause
+We know/assume:\\
+p(Sun Explodes) = 0.0001, P(Yes $|$ Sun Explodes) = 35/36\\ \hfill \\
+\pause
+We can calculate:\\
+p(Yes) = P(Yes $|$ Sun Explodes)p(Sun Explodes) + P(Yes $|$ Sun Doesn't Explode)p(Sun Doesn't Explodes) \\
+\hfill = 35/36 * 0.0001 + 1/36 * 0.9999 = 0.0277775 \\
+\begin{tiny}credit: Amelia Hoover\end{tiny}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bayes Theorem in Action}
+$$ p(Sun Explodes | Yes) = \frac{p(Yes | Sun Explodes)p(Sun Explodes)}{p(Yes)} $$
+\hfill \\
+$$ p(Sun Explodes | Yes) = \frac{0.0001*35/36}{0.028} = 0.0035 $$
+\hfill \\ \hfill
+Incorporating Prior Information about the Sun Exploding gives us a {\emph very} different answer \\ \hfill \\
+\pause Note, we can also explicitly evaluate the probability of an alternate hypothesis - p(Sun Doesn't Explode $|$ Yes)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Marginal Distribution in the Denominator}
+$$ p(\theta | X) = \frac{p(X | \theta)P(\theta)}{\displaystyle \sum_{i=0}^{j} p(X | \theta_{i})p(\theta_{i})} $$
+\pause What are alternate parameter values but alternate hypotheses?\\ \hfill \\  Denominator - marginal distribution -  becomes an integral of likelihoods if $\theta$ is continuous.  It normalizes the equation to be between 0 and 1.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How do we Choose a Prior?}
+\begin{itemize}
+ \item A prior is a powerful tool, but it can also influence our results of chosen poorly.  This is a highly debated topic.
+  \pause
+ \item Conjugate priors make some forms of Bayes Theorem analytically solveable
+ \pause
+ \item If we have objective prior information - from pilot studies or the literature - we can use it to obtain a more informative posterior distribution
+ \pause
+ \item If we do not, we can use a weak or flat prior (e.g., N(0,1000)).  Note: constraining the range of possible values can still be weakly informative - and in some cases beneficial
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Influence of Priors}
+Here's the posterior distribution drawn using the same sample - but in one case with a weak prior, and one a strong prior.
+<<prior, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Priors and Sample Size}
+The influence of priors decreases with same size.  A large sample size 'overwhelms' the prior. 
+<<priorDataStrong, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Evaluation of a Posterior: Frequentist Confidence  Intervals}
+In Frequentist analyses, the {\bf 95\% Confidence Interval} of a parameter is the region in which, were we to repeat the experiment an infinite number of times, the \emph{true value} would occur 95\% of the time.  For normal distributions of parameters: \\
+$$\hat{\beta} - t(\alpha, df)SE_{\beta} \le \beta \le \hat{\beta} +t(\alpha, df)SE_{\beta}$$
+\hfill \\
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Evaluation of a Posterior: Bayesian Credible  Intervals}
+
+In Bayesian analyses, the {\bf 95\% Credible Interval} is the region in which we find 95\% of the possible parameter values.  The observed parameter is drawn from this distribution.  For normally distributed parameters:
+$$\hat{\beta} - 2*\hat{SD} \le \hat{\beta} \le \hat{\beta} +2*\hat{SD}$$
+\hfill \\
+where $\hat{SD}$ is the SD of the posterior distribution of the parameter $\beta$.  Note, for other types of parameters, the distribution may be different.
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bayes Theorem Expanded}
+\begin{large}$ p(\theta | X) = \frac{p(X | \theta)P(\theta)}{\displaystyle \sum_{i=0}^{j} p(X | \theta_{i})p(\theta_{i})} $\end{large} - Algebraically Solvable \\
+\hfill \\
+\hfill \\ \pause
+\begin{large} $ p(\theta | X) = \frac{p(X | \theta)P(\theta)}{\int p(X | \theta)p(\theta)d\theta} $\end{large} - Analytically Solveable for Conjugate Priors
+\hfill \\
+\hfill \\\pause
+\begin{large} $ p(\theta | X) = \frac{\int p(X | \theta)P(\theta|\eta)p(\eta)d\eta}{\int\int p(X | \theta)p(\theta)d\theta d\eta}$\end{large} - Hierarchical Model: need numerical integration approach with random hyperparameters
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Markov Chain Monte Carlo Sampling (MCMC)}
+<<mcmcgraphic, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Markov Chain Monte Carlo Sampling (MCMC)}
+If we cannot analytically solve a distribution, we can still simulate from it:
+\begin{itemize}
+ \item Chose a set of starting values X at t=0
+ \item Chose a random set of parameters, Y, from the distribution parameterized by X
+ \item Select a uniorm random number between 0 and 1, U
+ \item If U $\le$ f(X,Y), X(t+1) = Y.  Otherwise, X(t+1) = X.
+ \item Rinse and repeat 
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Markov Chain Monte Carlo Sampling (MCMC)}
+This is a time series.  To use it for inference to sample from the final stationary distribution:
+\begin{itemize}
+ \item Discard a 'burn in' set of samples
+ \item 'Thin' your chain to reduce temporal autocorrelation
+ \item Examine chain for convergence on your posterior distribution
+ \item Evaluate multiple chains to ensure convergence to a single distribution
+ 
+\end{itemize}
+Many different samplers using different decision rules for f.  We use the Gibbs Sampler commonly.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Software Options for MCMC}
+\begin{itemize}
+ \item WinBUGS \url{http://www.mrc-bsu.cam.ac.uk/bugs/}
+ \item OpenBUGS \url{http://www.openbugs.info/w/}
+ \item JAGS \url{http://mcmc-jags.sourceforge.net/}
+ \item STAN \url{http://mc-stan.org/}
+ \item MCMCglmm in R
+ \item MCMCpack in R
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{BUGS code for a Simple Linear Regression}
+<<eval=FALSE>>=
+model {
+# Prior
+    alpha ~ dnorm(0,0.001)
+    beta ~ dnorm(0,0.001)
+    sigma ~ dunif(0,100)
+
+# Likelihood
+for (i in 1:n){
+    y[i] ~ dnorm(mu[i],tau)
+    mu[i] <- alpha + beta*x[i]
+  }    
+
+}
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Example: The RIKZ Beaches and Tide Height}
+<<rikz_example>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Plots of Chains}
+<<rikz_solution>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Plots of Chains}
+<<rikz_solution_VCV>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Sometimes Problems are Obvious}
+<<nap_bad, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Did you Thin Enough?}
+<<rikz_autocor, size="scriptsize">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Did You Converge: Assessing  with Multiple Chains}
+<<other_chains>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Did You Converge: Assessing  with Multiple Chains}
+<<other_chains_plot>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Gelman-Rubin Diagnostic}
+Diagnostic should be close to 1.
+<<gelman_rubin>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Evaluating Results}
+<<rikz_summary, out.lines=1:4>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Evaluating Results}
+<<rikz_summary, out.lines=8:12>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Evaluating Results}
+<<rikz_summary, out.lines=13:19>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Your 95\% Credible Interval}
+<<rikz_hpd>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Bayesian Approach to MMI: The DIC}
+$$DIC = \bar{D(\theta)} + pD$$
+from Spiegelhalter et al 2002\\ \hfill \\
+$\bar{D(\theta)}$ is the average deviance and pD = Effective \# of parameters\\
+\hfill \\ \pause
+$pD = \bar{D(\theta)} - D(\bar{\theta})$
+\pause
+<<DIC>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Setting Priors}
+<<setPrior>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Strong Priors Can Alter Parameters}
+<<nap_prior>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Random Effects}
+MCMCglmm allows random effects \& family much like nlme\\
+\hfill \\
+<<eval=FALSE>>=
+MCMCglmm(y ~ x, random = z + x:z)
+@
+Implies that the intercept varies randomly by z and the slope of x varies by z.  Equivalent to (1+x $|$ z)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Off the MCMC Shorline}
+\begin{itemize}
+ \item Fit a model with a NAP*angle1 interaction and random effect of beach
+ \item Evaluate the model and whether it is fit well
+ \item Compare the coefficients to a model with a strong prior that the interaction is -5.
+\end{itemize}
+
+\end{frame}
+
+\end{document}

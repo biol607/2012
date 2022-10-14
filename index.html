@@ -1,0 +1,453 @@
+
+<html>
+  <head>
+   <title>Jarrett Byrnes, Community Ecologist</title>
+   <link rel="stylesheet" href="./styles.css" type="text/css" />
+  </head>
+<body>
+
+<div id="titles">
+  Biol697 <span id="subtitle">An introduction to Computational Data Analysis in Biology</subtitle>
+</div>
+<br>
+
+<div id="linkbar">
+  about
+    <div id=linksub>
+	<a href="./syllabus.pdf">syllabus</a><br>
+	<a href="http://github.com/jebyrnes/biol697">course github</a><br>
+	<a href="http://www.zoology.ubc.ca/~whitlock/ABD/teaching/index.html">whitlock & schluter website</a><br>
+
+   </div>
+<br><br>
+  R
+    <div id=linksub>
+	<a href="http://r-project.org">r-project.org</a><br>
+	<a href="http://rstudio.org">r studio</a><br>
+	<a href="http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html">google's R style guide</a><br>
+	<a href="https://github.com/hadley/devtools/wiki/Style">hadley's R style guide</a><br>
+    </div>
+
+<br><br>
+  links
+      <div id=linksub>
+      <a href="http://www.r-bloggers.com/">r-bloggers</a><br>
+      <a href="http://blog.revolutionanalytics.com/">R-evolutions</a><br>
+     <a href="./bloglinks.shtml"> blogs</a><br>
+      </div>
+
+</div>
+ 
+<div id="contentbox" style="width:75%; left:19%; padding:15px">
+ 
+<span id=subtitle style="margin-left: 0px"><b><span style="color:black">Biol 697: An Introduction to Computational Data Analysis for Biology</span></b></span><br>
+<br><br>
+<b>Weekly Schedule:</b> Tuesday & Thursday 11-12:30<bR><br>
+
+<b>Office Hours:</b>Prof. Byrnes will hold office hours Wednesday from 10:00- 11:30.  If you need to schedule a different time, <a href="mailto:jarrett.byrnesATumbDOTedu">email him</a>.<br>
+<br><br>
+
+
+
+<b>Overview:</b><br> This course will cover the basic statistical knowledge necessary for a graduate student to design, execute, and analyze a basic research project. The course aims to have students focus on thinking about the biological processes that they are studying in their research and how to translate them into statistical models. The course will take a hands-on computational approach, teaching students the statistical programming language R. In addition to teaching the fundamentals of data analysis, we will emphasize several key concepts of efficient computer programming that students can use in a variety of other areas outside of data analysis.
+<br><br>
+
+<b>Prerequisites:</b><br> 
+I will assume a basic knowledge of algebra and introductory calculus (although no calculus will be used). Undergraduate courses in probability theory and computer science are useful, but not required. Students who are new to programming should skim chapter 1 of Adler before beginning the course.
+<br><br>
+Also, you must install <a href="http://www.r-project.org">R</a> and <a href="http://www.rstudio.org">R-studio</a> on your laptop before the first day of class.  Please bring your latop to all classes.
+<br><br>
+
+
+<b>Required Texts:</b><br>
+Adler, J. (2009) R in a Nutshell: A Desktop Quick Reference. O'Reilly. [<a href="http://www.amazon.com/Nutshell-Desktop-Quick-Reference/dp/059680170X">amazon</a>]
+<br><br>
+
+Media. Vickers, A. (2009) What is a p-value anyway? 34 Stories to Help You
+Actually Understand Statistics. Addison Wesley. [<a href="http://www.amazon.com/p-value-Stories-Actually-Understand-Statistics/dp/0321629302">amazon</a>]
+<br><br>
+
+Whitlock, W.C. and Schluter, D. (2008) The Analysis of Biological Data. Roberts and Company Publishers. [<a href="http://www.amazon.com/Analysis-Biological-Data-Michael-Whitlock/dp/0981519407/">amazon</a>]
+<br><br>
+
+
+<b>Recommended Texts:</b><br>
+I will be drawing on examples and materials from a few other sources. They include wonderful examples of R code in the context of data analysis. You are not required to have these, but you will either find them useful in this course or in future endeavors.
+<br><br>
+
+Bolker, B. (2009) Ecological Models and Data in R. Princeton University Press. [<a href="http://www.math.mcmaster.ca/~bolker/emdbook/">link with preprint</a>]
+<br><br>
+
+Matloff, N. (2011) The Art of R Programming: A Tour of Statistical Software Design. No Starch Press. [<a href="http://nostarch.com/artofr.htm">no startch</a>]
+<br><br>
+
+Song, S. Qian (2009) Environmental and Ecological Statistics with R. Chapman and Hall/CRC Press, London. [<a href="http://www.amazon.com/Environmental-Ecological-Statistics-Chapman-Applied/dp/1420062069">amazon</a>]
+
+<br><br>
+
+<b>Assignments and Exams:</b><br>
+Your grade will be determined by a combination of weekly homework, a midterm, and a final exam. Homework will consist of a problem set and a short response to a chapter from Vickers. Homework will be worth 50% of your course grade. All exams will be take-home. The midterm will be worth 20% and the final will be worth 30%. Additionally, students may earn extra credit for a statistical write-up of their own research data to be turned in during the finals period.<br><br>
+
+All homework is open book, open internet (save looking for answer keys).  Feel free to discuss the work with your classmates, but your answers must be your own.  Exams will be open book, open internet, but no collaboration between classmates.
+<br><br>
+
+<b>Course Content:</b><br>
+Every week we will have assigned readings from the above texts and other papers and chapters at my discretions.  PDFs will be provided as needed.  Assignments for that week will be due the following Tuesday.<br><br>
+
+<b>NOTE: Remove _handout to get the original slides</b>
+
+<table width=100% valign=top, border=1>
+
+<tr>
+	<td><b><u>Week</b></u></td>
+	<td><b><u>Topic</b></u></td>
+	<td><b><u>Readings</b></u></td>
+	<td><b><u>Assignments Due Next Tues.</b></u></td>
+</tr>
+
+<tr valign=top>
+ <td>1.</td>
+ <td>Introduction, Data & Data Management<br>
+	<a href="./syllabus.pdf">course syllabus</a><br>
+	<a href="./lectures/lecture1_handout.pdf">lecture 1 handout</a><br>
+	<a href="./popquiz1.pdf">pop quiz!</a><br>
+	<a href="./lectures/lecture2_handout.pdf">lecture 2 handout</a><br>
+<br>
+ </td>
+ <td>Vickers Ch. 1,32-34<br><br>
+  Adler Chapter 3
+  </td>
+ <td>
+ 	<a href="./homework/Homework_1.pdf">Homework 1</a><br>
+ 	<a href="./homework/ponds.txt">homework 1 ponds data</a><br>
+ 	<a href="./homework/homework_1_solution.R">homework 1 solution code</a><br>
+ </td>
+</tr> 
+
+<tr valign=top>
+	<td>2. </td>
+	<td>Biological Processes & Sampling Populations<br>
+	<a href="./lectures/lecture_3_handouts.pdf">lecture 3 handout<br>
+	<a href="./lectures/lecture_3.R">lecture 3 code</a><br><br>
+		<a href="./lectures/lecture_4_handout.pdf">lecture 4 handout<br>
+	<a href="./lectures/lecture_4.R">lecture 4 code</a><br>	
+	<a href="./02e1bDesertBirdCensus.csv">desert bird census data</a><br><br>
+	</td>
+	
+	<td>Whitlock & Schluter  Chapters 1 [<a href="http://www.roberts-publishers.com/media/whitlock.1.pdf">pdf</a>], 3-4<br><br>
+	Bolker's Distributions Bestiary<Br> [<a href="./readings/Bolker Distribution Beastiary.pdf"> pdf</a>]<br><br>
+	Vickers Chapters 2-5<br>
+	</td>
+	
+	<td> 	<a href="./homework/homework_2.pdf">Homework 2</a><br>
+	 		<a href="./homework/homework_2_solution.R">homework 2 solution code</a><br>
+</td>
+	<tr>
+
+<tr valign=top>
+	<td>3. </td>
+	<td>Statistical Distributions & Data Visualization<br>
+		<a href="./lectures/lecture_5_handout.pdf">lecture 5 handout<br>
+		<a href="./lectures/lecture_5.R">lecture 5 code</a><br><br>
+	<a href="./lectures/lecture_6_handout.pdf">lecture 6 handout<br>
+		<a href="./lectures/lecture_6.R">lecture 6 code</a><br>
+		<a href="./data/hampton.5.1-Baikal_74_97_moAvg_plankton.csv">data for lecture and homework</a> (<a href="http://knb.ecoinformatics.org/knb/metacat/nceas.290/nceas">original source</a>)<br><br>
+
+
+	</td>
+	
+	<td>Whitlock & Schluter  Chapters 2, 10<br>
+	<a href="http://vita.had.co.nz/papers/layered-grammar.pdf">A Layered Grammer of Graphics</a><br>
+	Bolker's Distributions Bestiary [<a href="./readings/Bolker Distribution Beastiary.pdf">pdf</a>]<br>(which you should have read last week)<br>
+	Adler Chapter 6, 14 for reference<br>
+	Vickers Chapters 6-8, 11-12<br><br>
+	</td>
+	
+	<td> 	<a href="./homework/homework_3.pdf">Homework 3</a><br>
+			<a href="./homework/homework_3_solution.pdf">Homework 3 Solution</a><br>
+	</td>
+	</tr>
+
+<tr valign=top>
+	<td>4. </td>
+	<td>Probability and Hypothesis Testing<br>
+		<a href="./lectures/lecture_7_handout.pdf">lecture 7 handout<br>
+		<a href="./lectures/lecture_7.R">lecture 7 code</a><br><br>
+	<a href="./lectures/lecture_8_handout.pdf">lecture 8 handout<br>
+		<a href="./lectures/lecture_8.R">lecture 8 code</a><br>
+			<a href="./powerHandout.pdf">Power via Simulation Handout<br>
+		<a href="./powerSim.R">code for Power handout</a><br>
+	<br></td>
+	
+	<td>Whitlock & Schluter Chapters 5-7<br>
+		Vickers Chapters 13-15<br>
+		<A href="http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html">Google's R Style Guide<br><br></td>
+	<td>
+		<a href="./homework/homework_4.pdf">Homework 4</a><br>
+		<a href="./homework/homework_4_solution.pdf">Homework 4 Solution</a><br>
+	</td>
+</tr>
+
+<tr valign=top>
+	<td>5. </td>
+	<td>Writing Functions to Test Hypotheses<br>
+				<a href="./lectures/lecture_9_handout.pdf">lecture 9 handout<br>
+		<a href="./lectures/lecture_10_handout.pdf">lecture 10 handout<br>
+
+	<br></td>
+	
+	<td>Whitlock & Schluter Chapters 9 & 11<br>
+		Adler Chapter 9<br>
+		<a href="./readings/Hurlbert_Lombardi_2009.pdf">Hurblert & Lombardi 2009</a><br>
+		No Vickers.  Use the Hurlbert & Lombardi as a<Br> prompt (if you need one) for next week's reflection<br><br></td>
+	<td>
+				<a href="./homework/homework_5.pdf">Homework 5</a><br>
+				<a href="./homework/homework_5_solution.pdf">Homework 5 Solution</a><br>
+
+	</td>
+</tr>
+
+<tr valign=top>
+	<td>6. </td>
+	<td>Fitting Linear Models: Least Squares<br>
+						<a href="./lectures/lecture_11_handout.pdf">lecture 11 handout<br>
+		<a href="./lectures/lecture_11.R">lecture 11 code</a><br>
+		<a href="./data/16e2InbreedingWolves.csv">wolf inbreeding data</a><br>
+		<a href="./data/16q11PufferfishMimicry Caley & Schluter 2003.csv">pufferfish data</a><br><br>
+						<a href="./lectures/lecture_12_handout.pdf">lecture 12 handout<br>
+		<a href="./lectures/lecture_12.R">lecture 12 code</a><br>
+	<br></td>
+	
+	<td>Whitlock & Schluter Chapters 16 - 17.6<br>
+		Vickers Chapters 17-19<br>
+		<Br>
+	<td>
+				<a href="./homework/homework_6.pdf">Homework 6</a><br>
+				<a href="./homework/seasonal_mouse_activity.csv">Homework 6 Data</a><br>
+				<a href="./homework/homework_6_solution.pdf">Homework 6 Solution</a><br>
+
+	</td>
+</tr>
+
+<tr valign=top>
+	<td>7. </td>
+	<td>Fitting Linear Models: Likelihood<br>
+		<a href="./lectures/lecture_13_handout.pdf">lecture 13 handout<br>
+		<a href="./lectures/lecture_13.R">lecture 13 code</a><br>
+		<a href="20q18BeeLifespans.csv">Bee Lifespan Data</a><br><br>
+		<a href="./lectures/lecture_14_handout.pdf">lecture 14 handout<br>
+		<a href="./lectures/lecture_14.R">lecture 14 code</a><br>
+
+	<br></td>
+	
+	<td>Whitlock & Schluter Chapter 20<br>
+		<a href="http://www.math.mcmaster.ca/~bolker/eeid/ecology/mle_2012.pdf">Bolker 2012</a><br>
+		Vickers Chapters 20-22<br>
+		<Br>
+	<td>
+				<a href="./homework/homework_7.pdf">Homework 7</a><br>
+				<a href="./homework/03e2SpiderRunningAmputation.csv">Spider Data</a><br>
+				<a href="./homework/02e1bDesertBirdCensus.csv">Bird Data</a><br>
+	</td>
+</tr>
+<tr valign=top>
+	<td>8. </td>
+	<td>Generalized Linear Models<br>
+			<a href="./lectures/lecture_15_handout.pdf">lecture 15 handout<br>
+					<a href="./lectures/lecture_15.R">lecture 15 code</a><br>
+
+		<a href="./lectures/lecture_16_handout.pdf">lecture 16 handout<br>
+		<a href="./lectures/lecture_16.R">lecture 16 code</a><br>
+
+	<br></td>
+	
+	<td>Whitlock & Schluter 17.8<br>
+	<a href="./readings/O'Hara_2009_glmm.pdf">O'Hara 2009</a> (skip part on mixed models)<br>
+	<a href="./readings/o'hara_and_kotze_do_not_log_transform.pdf">Do not log transform count data</a><br>
+	<a href="./readings/Wharton_Hui_2011_Ecology.pdf">The arcsine is asinine</a><br>
+	Optional <a href="Xiao_et_al_2011_Ecology_powerlaw.pdf">Nonlinear Least Squares & Power Laws</a> <br>
+		Vickers Chapters 23-24<br>
+		<Br>
+	<td>
+<!--				<a href="./exam_1.pdf">Midterm Exam</a><br>
+				<a href="./exam_1_answers.pdf">Midterm Exam Answers</a><br> -->
+				No Reflection Due <br>
+
+	</td>
+</tr>
+
+<tr valign=top>
+	<td>9. </td>
+	<td>Experiments & the Linear Model (ANOVA)<br>
+			<a href="./lectures/lecture_17_handout.pdf">lecture 17 handout<br>
+			<a href="./lectures/lecture_17.R">lecture 17 code</a><br>
+			<a href="./data/giant_kelp_all_years_20110921_clean.csv">LTER Kelp Data</a><br>
+			<a href="./data/15q13DaphniaResistance.csv">Daphnia Resistance Data</a><br>
+			<a href="./data/15q06DisordersAndGeneExpression.csv">Disorders and Gene Expression</a><br><br>
+
+			<a href="./lectures/lecture_18_handout.pdf">lecture 18 handout<br>
+					<a href="./lectures/lecture_18.R">lecture 18 code</a><br>
+
+	<br></td>
+	
+	<td>Whitlock & Schluter 15<br>
+	
+				<a href="./readings/Wickham_2011_plyr.pdf">Wickham 2011</a> (skim)<br>
+	
+		<Br>
+	<td>
+				
+
+	</td>
+</tr>
+
+
+<tr valign=top>
+	<td>10. </td>
+	<td>Multiple Predictors<br>
+			<a href="./lectures/lecture_19_handout.pdf">lecture 19 handout<br>
+			<a href="./lectures/lecture_19.R">lecture 19 code</a><br>
+			<a href="./data/18e2ZooplanktonDepredation.csv">Zooplankton Predation Data</a><br>
+			<a href="./data/18q07BeeGeneExpression.csv">Bee Gene Expression</a><br><br>
+
+			<a href="./lectures/lecture_20_handout.pdf">lecture 20 handout<br>
+					<a href="./lectures/lecture_20.R">lecture 20 code</a><br>
+			<a href="./data/Keeley_rawdata_select4.csv">Fire Recovery Data</a><br><br>
+
+	<br></td>
+	
+	<td>Whitlock & Schluter 18<br>
+	
+				No Vickers, but, reflection on how your have changed how you think about data & models<br>
+	
+		<Br>
+	<td>
+		<a href="./homework/homework_8.pdf">Homework 8</a><br>
+		<a href="./homework/homework_8_solution.pdf">Homework 8 Solution</a><br>
+		<a href="./homework/seed_survival.csv">Seed Survival Data</a><br>
+
+	</td>
+</tr>
+
+<tr valign=top>
+	<td>11. </td>
+	<td>Interactions, Covariates & Experiments<br>
+			<a href="./lectures/lecture_21_handout.pdf">lecture 21 handout<br>
+			<a href="./lectures/lecture_21.R">lecture 21 code</a><br>
+			<a href="./data/18q09NeanderthalBrainSize.csv">Neanderthal Brain Size</a><br>
+			<a href="./data/18e3IntertidalAlgae.csv">Intertidal Algae</a><br><br>
+			
+			<a href="./lectures/lecture_22_handout.pdf">lecture 22 handout<br>
+			<a href="./lectures/lecture_22.R">lecture 22 code</a><br>
+	<br></td>
+	
+	<td>Whitlock & Schluter 14<br>
+	<a href="./readings/Hurlbert_1984_eco_mono.pdf">Hurlbert 1984</a><br>
+	Vickers Ch. 25-26
+	<br>
+		</td>
+	<td>
+
+	</td>
+</tr>
+
+<tr valign=top>
+	<td>12. </td>
+	<td>Confounding Variables<br>
+			<a href="./lectures/lecture_23_handout.pdf">lecture 23 handout<br>
+
+	<br></td>
+	
+	<td> <a href="./readings/pearl_back_front_door.zip">Selections from Pearl Ch3</a><br>
+		<a href="./readings/cottingham_et_al_2005_frontiers_all.pdf">Cottingham et al 2005</a><br>
+		Vickers Ch 27-28<br>
+	
+		<Br>
+	</td>
+	<td>
+		No homework: Thanksgiving
+	</td>
+</tr>
+
+<tr valign=top>
+	<td>13. </td>
+	<td>Nesting, Random Effects, and Hierarchical Models<br>
+<a href="./lectures/lecture_24_handout.pdf">lecture 24 handout<br>
+			<a href="./lectures/lecture_24.R">lecture 24 code</a><br>
+			<a href="./data/rikx.csv">Intertidal Richness Data</a><br>
+			<a href="./data/nestedGrowth.csv">Nested Plant Growth Data</a><br><br>
+			
+			<a href="./lectures/lecture_25_handout.pdf">lecture 25 handout<br>
+			<a href="./lectures/lecture_25.R">lecture 25 code</a><br>
+			<a href="./data/allbirds.csv">Hawaiian Bird Data</a><br>
+			<a href="./data/planktonMeans.csv">Averaged Plankton Timeseries Data</a><br><br>
+	<br></td>
+	
+	<td> 
+	<a href="./readings/Schielzeth_and_Nakagawa_2012_MEE.pdf">Schielzeth and Nakagawa 2012</a><br>
+	<a href="./readings/Schielzeth_and_Nakagawa_2012_Appendix.docx">Schielzeth and Nakagawa Appendix</a><br>
+		<a href="./readings/Bolker_et_al_2009_TREE.pdf">Bolker et al 2009</a><br>
+		Optional (but recommended): <a href="http://emhart.github.com/blog/2012/11/16/making-sense-of-random-effects/">Making Sense of Random Effects
+</a><br>
+		Optional (but recommended): <a href="./readings/zuur_ch_5.pdf">Zuur 5.1-5.6</a><br>
+	Optional: <a href="http://glmm.wikidot.com/examples">Bolker Examples</a><br>
+		Vickers Ch 29-31<br>
+		
+		<Br>
+	</td>
+	<td>
+		No homework: Work on Exams
+	</td>
+</tr>
+
+<tr valign=top>
+	<td>14. </td>
+	<td>Information Theoretic & Bayesian Approaches<br>
+<a href="./lectures/lecture_26_handout.pdf">lecture 26 handout<br>
+			<a href="./lectures/lecture_26.R">lecture 26 code</a><br><br>
+			
+			<a href="./lectures/lecture_27_handout.pdf">lecture 27 handout<br>
+			<a href="./lectures/lecture_27.R">lecture 27 code</a><br><br>
+
+	<br></td>
+		
+	<td>  <a href="./readings/Hobbs_and_Hilborn_2006.pdf">Hobbs and Hilborn 2001</a><br>
+	 <a href="./readings/Symonds_and_Moussalli_2010_behav_ecol.pdf">Symonds and Moussalli 2010</a><br>
+	 <a href="./readings/Ellison_1996_ecol_app.pdf">Ellison 1996</a><br><br>
+	 Optional (but recommended) <a href="http://www.stats.ox.ac.uk/~ripley/Nelder80.pdf">Ripley's Introduction to AIC</a><br>
+
+	 Vickers 32-34<br><br>
+
+		
+	</td>
+	<td>
+		Exam Part I Due on the 6th<Br>
+
+	</td>
+</tr>
+<tr valign=top>
+	<td>15. </td>
+	<td>Wrap Up and Concluding Discussion<br>
+
+	</td>
+
+	<td> 
+		 <a href="./readings/Murtaugh_2007_Ecology.pdf">Murtaugh 2007</a><br>
+
+		Final Reflection!  Wrap-Up of Your Thoughts!
+	</td>
+	<td>
+		Final due on the 18th, Extra Credit on the 20th.<br><br>
+	</td>
+</tr>
+
+</table>
+
+
+
+</div>
+
+</body>
+ 
+ </html>
+

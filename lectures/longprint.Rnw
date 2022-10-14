@@ -1,0 +1,14 @@
+\documentclass{beamer}
+
+\begin{document}
+<<include=FALSE, echo=FALSE>>=
+library(nlme)
+fm2 <- lme(distance ~ age + Sex, data = Orthodont, random = ~ 1)
+@
+
+\begin{frame}[fragile,allowframebreaks] 
+<<>>=
+summary(fm2)
+@
+\end{frame}
+\end{document}

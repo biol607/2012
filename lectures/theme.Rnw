@@ -1,0 +1,19 @@
+\documentclass{article}
+
+\begin{document}
+
+<<test>>=
+themes<-knit_theme$get()
+
+
+for (a.theme in themes){
+  
+  knit_theme$set(a.theme)
+  
+  a <- 3+5
+   b<- sum(1:10, na.rm=T)
+  for(g in 1:10) z<-0
+}
+@
+
+\end{document}

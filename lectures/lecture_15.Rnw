@@ -1,0 +1,474 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 15 - Nonlinear Fits
+%%%   
+%%%
+%%% Last Modified 10/22/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<set-options, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_15.R")
+
+opts_chunk$set(size = "footnotesize")
+opts_chunk$set(fig.align = "center")
+opts_chunk$set(out.height="0.55\\textwidth")
+opts_chunk$set(out.width="0.55\\textwidth")
+opts_chunk$set(fig.height=5)
+opts_chunk$set(fig.width=5)
+opts_chunk$set(tidy=FALSE)
+opts_chunk$set(prompt=FALSE)
+opts_chunk$set(comment="#")
+
+par(mar=c(5,4,2,2))
+@
+
+<<lecture15prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge Nonlinear Models
+\end{frame}
+
+
+%What do do when it's nonlinear?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What do you do when you don't have a line?}
+<<fungus_plot, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What do you do when you don't have a line?}
+ \begin{enumerate}
+   \item If nonlinear terms are additive fit with OLS
+   \item Transform?  But think about what it will do to error.
+   \item Nonlinear Least Squares 
+   \item Generalized Linear Models
+ \end{enumerate}
+\end{frame}
+
+%1) If it's additively nonlinear, fit it
+%What do do when it's nonlinear?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A Quadratic Adventure}
+<<fungus_plot, echo=FALSE>>=
+@
+$$Spores = b0 + b1*Longevity + b2*Longevity^2 + error$$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Putting Nonlinear Terms into an Additive Model}
+<<fungus_nonlinear_lm>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Parameters are the Same as Ever}
+<<fungus_nonlinear_summary>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We Can't use {\tt abline} Anymore}
+<<fungus_nonlinear_plot, eval=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We Can't use {\tt abline} Anymore}
+<<fungus_nonlinear_plot, echo=FALSE>>=
+@
+\end{frame}
+
+%2) Transform, but be careful
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What if It's not a Linear Combination of Terms?}
+<<primate_plot, echo=FALSE>>=
+@
+$$Metabolic Rate = a*mass^b $$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Common Transformations}
+ \begin{itemize}
+  \item log(y)
+  \item \st{{arcsin(sqrt(y)) for bounded data}
+  \item logit for bounded data (more well behaved)
+  \item Box-Cox Transform
+ \end{itemize}
+ May have to add 0.01, 0.5, or 1 to many of these in cases with 0s\\
+ \hfill \\
+ \pause
+ You must ask yourself, what do the transformed variables mean?
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But Where does Error Come In}
+<<primate_plot_trans_log_log, echo=FALSE>>=
+@
+$$log(Metabolic Rate) = log(a) + b*log(mass) + error$$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But Where does Error Come In}
+
+$$log(Metabolic Rate) = log(a) + b*log(mass) + error$$
+\hfill \\
+\center implies
+\hfill \\
+
+$$Metabolic Rate = a*mass^{b}*e^{error} $$
+\hfill \\ \pause
+\center but we often want
+\hfill \\
+$$Metabolic Rate = a*mass^{b} + error $$
+
+\end{frame}
+
+
+%3) NLS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Nonlinear Least Squares Fitting}
+<<primate_nls>>=
+@
+Uses algorithm for fitting.  Very flexible. Must specify start values.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Nonlinear Least Squares Fitting}
+<<primate_nls_summaru>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{NLS Performs Better}
+<<primate_loglog_lm, echo=FALSE>>=
+@
+<<primate_plot_nls, echo=FALSE>>=
+@
+\end{frame}
+
+%%%% Exercise
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Kelp!}
+\begin{columns}
+\column{0.5\paperwidth}
+ \begin{itemize}
+  \item Evaluate the Frond $\sim$ Holdfast relationship
+  \item Fit a model with a log transformation
+  \item Fit a model with a nls model
+ \item Compare
+ \item Check the diagnostics - see anything?
+ \end{itemize}
+\column{0.5\paperwidth}
+ \includegraphics[width=0.8\textwidth]{./pics-15/Giant_kelp_adult.jpeg}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Kelp Data}
+
+<<kelp_plot, echo=FALSE>>=
+@
+\pause FRONDS are a count variable, cannot be $<$ 0
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Envelope Residuals from Log Transform}
+<<kelpLoad, echo=FALSE>>=
+@
+<<kelp_lm, echo=FALSE>>=
+@
+<<kelp_nls, echo=FALSE>>=
+@
+<<kelp_lm_diagnostic, echo=FALSE, fig.height=5, fig.width=10, out.height="0.45\\textwidth", out.width="0.9\\textwidth">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Mild Trumpet even in NLS}
+
+<<kelp_nls_diagnostic, echo=FALSE>>=
+@
+\pause Maybe the error is wrong...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Kelp Data}
+
+<<kelp_plot, echo=FALSE>>=
+@
+\pause FRONDS are a count variable, cannot be $<$ 0
+\end{frame}
+
+%4) GLM!  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Generalized Linear Models}
+Basic Premise: $y \sim dist(\eta, \nu)$ \\
+\hfill \\
+dist is a distribution of the {\emph exponential} family\\
+$\eta$ is a link function such that $\eta = f(\mu)$ where $\mu$ is the mean of a curve\\
+$\nu$ is a variance function \\
+\hfill \\
+\pause For example,  if dist is Normal, canonical link is $\mu$, variance is $\sigma^2$
+\end{frame}
+
+%4a) quick overview of possibilities
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Some Common Links}
+ \begin{itemize}
+   \item Identity: $\eta = \mu$ - e.g. $\mu = a + bx$
+    \item Log: $\eta = log(\mu)$ - e.g. $\mu = e^(a + bx)$
+    \item Logit: $\eta = logit(\mu)$ - e.g. $\mu = \frac{e^(a + bx)}{1+e^(a + bx)}$
+    \item Inverse: $\eta = \frac{1}{\mu}$ - e.g. $\mu = (a + bx)^{-1}$
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Distributions, Canonical Links, and Dispersion}
+\begin{tabular}{|c|c|c|}
+
+\hline \hline
+Distribution & Canonical Link & Variance Function \\
+\hline \hline
+Normal            & identity  & 1 \\
+Poisson           & log       & $\mu$ \\
+Quasipoisson      & log       & $\mu\theta$ \\
+Binomial          & logit     & $\mu(1-\mu)$ \\
+Quasibinomial     & logit     & $\mu(1-\mu)\theta$ \\
+Negative Binomial & log       & $\mu + \kappa\mu^2$ \\
+Gamma             & inverse   & $\mu^2$ \\
+Inverse Normal    & $1/\mu^2$ & $\mu^3$ \\
+\hline \hline
+\end{tabular}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Distributions and Other Links}
+\begin{tabular}{|c|c|}
+
+\hline \hline
+Distribution &Links \\
+\hline \hline
+Normal            & identity, log, inverse \\
+Poisson           & log, identity, sqrt \\
+Quasipoisson      & log, identity, sqrt \\
+Binomial          & logit, probit, cauchit, log, log-log \\
+Quasibinomial     & logit, probit, cauchit, log, log-log \\
+Negative Binomial & log, identity, sqrt \\
+Gamma             & inverse, identity, log \\
+Inverse Normal    & $1/\mu^2$, inverse, identity, log \\
+\hline \hline
+\end{tabular}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Deviance and IWLS}
+
+Every GLM has a Set of Deviance Function to be Minimized \\
+\hfill \\
+i.e., for a normal distribution $D_{M} = \sum(y_{i} - \hat\mu_{i})^2$\\
+\hfill \\
+Models are Fit using Iteratively Weighted Least Squares algorithm
+
+\end{frame}
+
+
+%5) Poisson
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Kelp Data}
+
+<<kelp_plot, echo=FALSE>>=
+@
+\pause FRONDS are a count variable, cannot be $<$ 0
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fitting a GLM with a Poisson Error and Log Link}
+Fronds $\sim$ Poisson( $\hat{Fronds}$ ) \\
+\hfill \\
+$\hat{Fronds}$ = exp(a + b * holdfast diameter)
+\hfill \\
+<<kelp_glm, size="normalsize", tidy=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How do we Assess Meeting Assumptions?}
+<<kelp_glm_plot_residuals, echo=FALSE, tidy=FALSE, out.height="0.7\\textwidth", out.width="0.7\\textwidth">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Different Types of Residuals}
+<<kelp_glm_residuals,eval=FALSE, tidy=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How do we Assess Meeting Assumptions?}
+<<kelp_glm_diagnostics, echo=FALSE, fig.height=5, fig.width=10, out.height="0.45\\textwidth", out.width="0.9\\textwidth">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{GLM Model Coefficients}
+<<kelp_glm_summary, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Checking Fit}
+<<kelp_glm_rsq, echo=TRUE, warning=FALSE, tidy=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Fitted Model}
+<<kelp_ggplot_fitted, echo=FALSE, warning=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Prediction Confidence Intervals by Hand}
+<<kelp_ggplot_prediction_intervals, eval=FALSE, tidy=FALSE, warning=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Prediction Confidence Intervals by Hand}
+<<kelp_ggplot_prediction_intervals, echo=FALSE, warning=FALSE>>=
+@
+\pause Overdispersion?
+\end{frame}
+
+
+%6) Quasipoisson & N.B.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Which Overdispersed Distribution to Use?}
+v(quasipoisson) = $\mu\theta$
+\\ \hfill \\
+v(Negative Binomial) = $\mu + \kappa\mu^{2}$
+\\ \hfill \\
+see Ver Hoef and Boveng 2007 Ecology
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{GLM with Negative Binomial}
+<<kelp_glm_nb>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Negative Binomial Performs Better}
+<<kelp_glm_anodev>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Fitted Model}
+<<kelp_ggplot_fitted2, echo=FALSE, warning=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fit with Prediction Error}
+<<kelp_ggplot_fitted2_error, echo=FALSE, warning=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Compare to Quasipoisson with Prediction Error}
+<<kelp_glm2, echo=FALSE, warning=FALSE>>=
+@
+<<kelp_gglm2_fitted, echo=FALSE, warning=FALSE, include=FALSE>>=
+@
+<<kelp_gglm2_fitted_error, echo=FALSE, warning=FALSE>>=
+@
+\end{frame}
+
+%%%% Exercise...wolves
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Example: Wolf Inbreeding and Litter Size}
+ \begin{columns}
+ \column{0.5\paperwidth}
+ \begin{itemize}
+ \item The Number of Pups is a Count!
+ \item Fit GLMs with different errors and links
+ \item Which is the best model?
+ \item Plot with fit and prediction error
+ \end{itemize}
+ \column{0.5\paperwidth}
+   \includegraphics[width=0.8\textwidth]{./pics-11/CUTE_WOLF_PUPS_by_horsesrock44.jpeg}\\
+
+
+ \end{columns}
+
+\end{frame}
+
+\end{document}

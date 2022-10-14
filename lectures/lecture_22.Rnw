@@ -1,0 +1,344 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 22 - Non-Additivities in MLR & Experimental Design
+%%%   
+%%%
+%%% Last Modified 11/8/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<set-options, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_22.R")
+
+opts_chunk$set(size = "footnotesize")
+opts_chunk$set(fig.align = "center")
+opts_chunk$set(out.height="0.55\\textwidth")
+opts_chunk$set(out.width="0.55\\textwidth")
+opts_chunk$set(fig.height=5)
+opts_chunk$set(fig.width=5)
+opts_chunk$set(tidy=FALSE)
+opts_chunk$set(prompt=FALSE)
+opts_chunk$set(warning=FALSE)
+opts_chunk$set(comment="#")
+
+par(mar=c(5,4,2,2))
+@
+
+<<lecture22prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge Interaction Effects with Continuous Variables
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Problem: What if Continuous Predictors are Not Additive?}
+<<keeley_int_plot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Problem: What if Continuous Predictors are Not Additive?}
+<<keeley_int_plot2, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{ % all template changes are local to this group.
+\setbeamertemplate{navigation symbols}{}
+\usebackgroundtemplate{\includegraphics[height=\paperheight]{./pics-20/fires.jpg}}
+
+\begin{frame}[plain]
+  \begin{minipage}[t][0.8\textheight][t]{\textwidth}
+\end{minipage}
+
+\colorbox{yellow}{\parbox[c]{1\textwidth}{Five year study of wildfires \& recovery in Southern California shurblands in 1993. 90 plots (20 x 50m)\\ (data from Jon Keeley et al.)}}
+\end{frame}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Fire!}
+\begin{itemize}
+\item Fit and evaluate a model that shows stand age and elevation interacting to impact fire severity
+\item Use ggplot2 to plot the data
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ANOVA with an Interaction}
+<<keeley_model, echo=FALSE>>=
+@
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newgeometry{margin=0.1cm}
+
+\begin{frame}[fragile]
+\frametitle{\hfill Type I, II, and III Sums of Squares}
+\begin{small}
+
+\begin{tabular}{c||c|c|c|}
+
+& Type I & Type II & Type III \\
+Test for A & A v. 1 & A + B v. B & A + B + A:B v. B + A:B \\
+Test for B & A + B v. A & A + B v. A & A + B + A:B v. A + A:B \\
+Test for A:B & A + B + A:B v. A + B & -- & -- \\
+%Test for A:B &A + B + A:B v. A + B & A + B + A:B v. A + B & A + B + A:B v. A + B \\
+
+\end{tabular}
+\hfill \\
+\hfill \\
+
+\begin{itemize}
+ \item What do type III models mean?
+ \item Interactions the same for all, and if A:B is real, main effects not important
+ \item Type III has lower power for main effects
+
+\end{itemize}
+
+\end{small}
+\end{frame}
+\restoregeometry
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Type II v. Type III Sums of Squares}
+<<keeley_III, size="scriptsize">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What does the Interaction Coefficient Mean?}
+<<keeley_coef, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Construct a Data Frame of Lines over Relevant Range}
+<<keeley_predict_df, eval=FALSE>>=
+@
+<<keeley_predict_df, include=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Construct a Data Frame of Lines over Relevant Range}
+<<keeley_predict_lines, eval=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Construct a Data Frame of Lines over Relevant Range}
+<<keeley_predict_lines, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Construct a Data Frame of Lines over Relevant Range}
+<<keeley_predict_error, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Match Lines with Data Overlay}
+<<keeley_predict_lines_data, eval=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Match Lines with Data Overlay}
+<<keeley_predict_lines_data, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Surfaces and Other 3d Objects}
+<<keeley_surf, eval=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Surfaces and Other 3d Objects}
+<<keeley_surf, echo=FALSE, cache=TRUE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge Experimental Design
+\end{frame}
+
+%Causal framework for Experiments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Causal Diagram of the World}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{./pics-22/causal_expt_Slide1.png}
+\end{center}
+
+In an experiment, we want to isolate effects between pairs of variables.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Manipulation to Determine Causal Relationship}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{./pics-22/causal_expt_Slide2.png}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Manipulation to Determine Causal Relationship}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{./pics-22/causal_expt_Slide3.png}
+\end{center}
+
+Experimental manipulation (done right) severs the link between a variable and its causes.  We can now test the causal effect of changing one variable on another.
+\end{frame}
+
+%F TEST
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Other Sources of Variation are "Noise"}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{./pics-22/causal_expt_Slide3.png}
+\end{center}
+\pause
+Properly designed experiments will have a distribution of other variables effecting our response variable.  We want to reduce BIAS due to biological processes
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+
+\frametitle{Other Sources of Variation are "Noise"}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{./pics-22/causal_expt_Slide4.png}
+\end{center}
+\pause
+AND - this term also includes observer error.  We must minimize OBSERVER BIAS as well. \\
+\end{frame}
+
+%Control
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Ensuring that our Signal Comes from our Manipulation}
+\begin{center}
+CONTROL\end{center}
+\pause
+\begin{itemize}
+ \item A treatment against which others are compared
+ \item Separate out causal v. experimental effects 
+ \item Techniques to remove spurious effects of time, space, gradients, etc.
+\end{itemize}
+\end{frame}
+
+
+%Replication
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Ensuring our Signal is Real}
+\begin{center}
+REPLICATION\end{center}
+\pause
+\begin{itemize}
+ \item How many points to fit a probability distribution?
+ \item Ensure that your effect is not a fluke accident
+ \item $\frac{p^{3/2}}{n}$ should approach 0 for Likelihood (Portnoy 1988 Annals of Statistics)
+ \item i.e.,$\sim$10 samples per paramter (1 treatment = 1 parameter, but this is total \# of samples)
+\end{itemize}
+\end{frame}
+
+%Bias & Confounding
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Removing Bias and Confounding Effects}
+\begin{center}
+ \includegraphics[height=0.7\textwidth]{./pics-22/sources_of_error.jpg}
+\end{center}
+(Hurlbert 1984)
+\end{frame}
+%Hurlbert concepts
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Randomization Can Come at a Cost}
+\begin{center}
+ \includegraphics[height=0.7\textwidth]{./pics-22/problems_with_randomization.jpg}
+\end{center}
+(Hurlbert 1984)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{RCBD (and factorial) and Latin Squares Designs}
+\begin{center}
+ \includegraphics[height=0.7\textwidth]{./pics-22/RCBD_latin_Squares.jpg}
+\end{center}
+(Hurlbert 1984)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Pseudoreplication and Confounded Results}
+\begin{center}
+ \includegraphics[height=0.7\textwidth]{./pics-22/design_types_pseudo.jpg}
+\end{center}
+(Hurlbert 1984)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Types of Psuedoreplication Easily Missed}
+\begin{center}
+ \includegraphics[height=0.7\textwidth]{./pics-22/kinds_of_pseudoreplication.jpg}
+\end{center}
+(Hurlbert 1984)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{General Principles of Experimental Design}
+\begin{itemize}
+ \item Start with a Causal Model.  What will you manipulate?
+ \item Consider proper controls \& replication
+ \item Consider how treatments will be arrayed accross gradients (known and unknown)
+ \item Rigorously investigate possible pseudoreplication
+\end{itemize}
+\end{frame}
+
+\end{document}

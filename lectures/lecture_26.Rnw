@@ -1,0 +1,384 @@
+\documentclass[handout]{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 26  Information Theoretic Analyses
+%%%   
+%%%
+%%% Last Modified 11/30/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\usepackage{colortbl}
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<setoptions, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_26.R")
+library(MASS)
+
+@
+
+<<lecture26prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+
+\huge Information Theoretic Approaches to Model Selection
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What is the Shape of this Relationship?}
+
+<<copepod_plot, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What is the Shape of this Relationship?}
+Is it linear?
+<<copepod_plot_linear, echo=FALSE>>=
+@
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What is the Shape of this Relationship?}
+Is is squared?
+<<copepod_plot_square, echo=FALSE>>=
+@
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What is the Shape of the Relationship?}
+Is it exponential with a Gamma error?
+<<copepod_plot_log, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What is the {\emph Relative Support} for Each Relationship?}
+<<copepod_plot, include=FALSE, echo=FALSE>>=
+@
+<<copepod_plot_log, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Selection in a Nutshell}
+
+The Frequentist P-Value testing framework emphasizes the evaluation of a single hypothesis - the null.  We evaluate whether we reject the null.  \\
+\pause
+\hfill \\
+This is perfect for an experiment where we are evaluating clean causal links, or testing for a a  predicted relationship in data. \\
+\pause
+\hfill \\
+Often, though, we have multiple non-nested hypotheses, and wish to evaluate each.  To do so we need a framework to compare the relative amount of information contained in each model and select the best model or models.  We can then evaluate the individual parameters.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Suppose this is the Truth}
+<<truth, echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We Can Fit a Model To Descibe Our Data, but it Has Less Information}
+<<truth_curve, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We Can Fit a Model To Descibe Our Data, but it Has Less Information}
+<<truth_line, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Information Loss and Kullback-Leibler Divergence}
+$$I(f,g) = \int f(x)log\frac{f(x)}{g(x|\theta)}dx$$
+\hfill \\
+where I(f,g) = information loss when a function g is used to approximate the truth, f - integrated over all values of x when g is evaluated with some set of parameters $\theta$ \pause \\
+\hfill \\ 
+Two neat properties: \\
+1) We can re-arrange to pull out a term $-log(g(x|\theta))$ which is our negative Log-Likelihood!\\ \pause
+2) If we want to compare the relative loss of $I(f,g_{1})$ and $I(f,g_{2})$, f(x) drops out as a constant!
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Defining an Information Criterion}
+$$I(f,g) + constant = -log(L(\theta | x)) + K$$
+\hfill \\
+where K is the number of parameters for a model\\
+\hfill \\
+This gives rise to Akaike's Information Criterion - lower AIC means less information is lost by a model
+{\boldmath $$ AIC = -2log(L(\theta | x)) + 2K$$ }
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Balancing Fit and Parsimony}
+A model with n-1 parameters from a dataset with n points with  always fit your data perfectly, but - 
+\begin{itemize}
+ \item With more parameters, variance in the estimates of parameters can become inflated
+ \item But, with too few parameters, estimates of parameters become biased.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Balancing General and Specific Truths}
+Which model better describes a general principle of how the world works?
+<<general_specific, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge How many parameters does it take to draw an elephant?
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But Sample Size Can Influence Fit...}
+$$AIC = -2log(L(\theta | x)) + 2K$$
+\hfill \\
+$$AICc = AIC + \frac{2K(K+1)}{n-K-1}K$$
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Variations on a Theme: Other IC Measures}
+For overdispersed count data, we need to accomodate the overdispersion parameter
+$$ QAIC = \frac{-2log(L(\theta | x))}{\hat{c}} + 2K$$
+\hfill \\
+where $\hat{c}$ is the overdispersion parameter \\ \hfill \\
+\pause Many other IC metrics for particular cases that deal with model complexity in different ways.  For example
+$$BIC = -2log(L(\theta | x)) + K ln(n)$$
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Implementing AIC: Create Models}
+<<copepod_models>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Implementing AIC: Compare Models}
+<<cop_linear_compare>>=
+@
+\pause
+<<cop_nonlinear_compare>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How can we Use AIC Values?}
+$$\Delta AIC = AIC_{i} - min(AIC)$$
+\hfill \\
+Rules of Thumb from Burnham and Anderson(2002): \\
+$\Delta$ AIC < 2 implies that two models are similar in their fit to the data\\
+$\Delta$ AIC between 3 and 7 indicate moderate, but less, support for retaining a model\\
+$\Delta$ AIC > 10 indicates that the model is very unlikely\\
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A Quantitative Measure of Relative Support}
+$$w_{i} = \frac{e^{\Delta_{i}/2 }}{\displaystyle \sum^R_{r=1} e^{\Delta_{i}/2 }}$$
+\hfill \\
+Where $w_{i}$ is the {\emph relative support} for model i compared to other models in the set being considered. \\ \hfill \\
+Model weights summed together = 1
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Weight Comparison}
+<<cop_modlist, eval=FALSE>>=
+@
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Weight Comparison}
+<<cop_modlist, echo=FALSE>>=
+@
+
+\end{frame}
+
+%% 3) Var Selection Conundrum
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What if You Have a LOT of Hypotheses?}
+<<show_vars,include=FALSE, echo=FALSE>>=
+@
+<<show_vars_square, echo=FALSE>>=
+@
+7 models alone if we keep linear and squared terms grouped
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Construct an AICc Table}
+<<fullmod0>>=
+@
+Use this model as a jumping off point, and construct a series of nested models with subsets of the variables.  Evaluate using AICc Weights
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{All 8 (intercept only!) Models}
+<<center_func, include=FALSE, echo=FALSE>>=
+@
+<<full_lm, include=FALSE, echo=FALSE>>=
+@
+<<models1, include=FALSE, echo=FALSE>>=
+@
+<<models2, include=FALSE, echo=FALSE>>=
+@
+<<modelList, include=FALSE, echo=FALSE>>=
+@
+<<aicctab>>=
+@
+\end{frame}
+
+%% 5) AIC comparison of two models and delta-AIC concept
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Variable Weights}
+Variable Weight = sum of all weights of all models including a variable.  Relative support for inclusion of parameter in models.
+<<importance2>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Averaged Parameters}
+$$\hat{\bar{\beta}} = \frac{\sum w_{i}\hat\beta_{i}}{\sum{w_i}}$$
+\hfill \\
+$$var(\hat{\bar{\beta}}) = \left [ w_{i} \sqrt{var(\hat\beta_{i}) + (\hat\beta_{i}-\hat{\bar{\beta_{i}}})^2}  \right ]^2$$
+\hfill \\
+Buckland et al. 1997
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Averaged Parameters}
+<<varEst, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Averaged Predictions}
+<<Predict>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{95\% Model Confidence Set}
+<<confSet>>=
+@
+Renormalize weights to 1 before using confidence set for above model averaging techniques
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Cautionary Notes}
+\begin{itemize}
+ \item AIC analyses aid in model selection.  One must still evaluate parameters and parameter error.
+ \item Your inferences are constrained solely to the range of models you consider.   You may have missed the 'best' model.
+ \item All inferences {\bf MUST} be based on {\emph a priori} models.  Post-hoc model dredging could result in an erroneous 'best' model suited to your unique data set.  
+ \end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But...}
+Considering MANY subsets of a larger model is tedious.  Computational methods can speed the way.  Calcagno's {\tt glmulti} package provides a flexible framework for multi-model consideration.
+<<glmulti>>=
+@
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Averaged Coefficients}
+<<glmulti_coef, size="scriptsize", out.lines=1:8>>=
+@
+Multiple SE methods implemented
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Averaged Coefficients}
+<<glmulti_coef, size="scriptsize", out.lines=9:16>>=
+@
+Multiple SE methods implemented
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model Averaged Coefficients}
+<<glmulti_coef, size="scriptsize", out.lines=17:27>>=
+@
+Multiple SE methods implemented
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Comparison of Predictions from Full Model to Full MMI}
+<<compare_pred, size="scriptsize">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Consider the Diatom}
+<<diatom_mod>>=
+@
+\begin{itemize}
+ \item Examine the data and consider valid model choices
+ \item Fit models, and evalute variable importance
+ \item What model(s) have good support?
+ \item What parameter(s) have good support?
+\end{itemize}
+\end{frame}
+
+%% exercise 
+
+
+\end{document}

@@ -1,0 +1,501 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 24  Nesting and Hierarchical Models
+%%%   
+%%%
+%%% Last Modified 11/23/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\usepackage{colortbl}
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<setoptions, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_24.R")
+library(MASS)
+
+@
+
+<<lecture24prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge Modeling Variance with Multilevel/Mixed Models
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Moving into Modeling Variance}
+So far we have be fitting
+$$ y_{i} = \beta_{i}X + \epsilon_{i} $$ \\
+\hfill \\
+where X is a number of predictors and $epsilon$ is random variation due to other processes.  We assume data points are independent.  But what if they're not?  What if clusters of data points vary due to some random variation unique to just those points.  We need a new model.  One where\\
+\hfill \\
+$$ y_{i} = \alpha_{j[i]} + \beta_{i}X + \epsilon_{ij} $$ \\
+
+where i = individual data points, j = cluster, or group
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{This Framework Addresses Psuedoreplication Naturally}
+\begin{center}
+ \includegraphics[height=0.6\textwidth]{./pics-22/kinds_of_pseudoreplication.jpg}
+\end{center}
+(Hurlbert 1984)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{For Example, the Nested Design}
+
+\begin{table}[htbp]
+
+\begin{tabular}{||c||c||c||}
+ \hline \hline
+TREATMENT \begin{tabular}{||c||c||c||}
+ \hline \hline
+\cellcolor{red}  &  &  \\ \hline \hline
+  & \cellcolor{red} & \cellcolor{red} \\ \hline \hline
+  &  &  \\ \hline \hline
+\end{tabular} & 
+
+ \begin{tabular}{||c||c||c||}
+ \hline \hline
+  &  & \cellcolor{red} \\ \hline \hline
+\cellcolor{red}  &  &  \\ \hline \hline
+ \cellcolor{red} &  &  \\ \hline \hline
+\end{tabular} &
+
+ \begin{tabular}{||c||c||c||}
+ \hline \hline
+  &  &  \\ \hline \hline
+  & \cellcolor{red} &  \\ \hline \hline
+ \cellcolor{red} &  & \cellcolor{red} \\ \hline \hline
+\end{tabular} \\ 
+ 
+ \hfill \\
+ 
+ 
+ CONTROL \begin{tabular}{||c||c||c||}
+ \hline \hline
+ \cellcolor{red} &  &  \\ \hline \hline
+  &  & \cellcolor{red} \\ \hline \hline
+  &  & \cellcolor{red} \\ \hline \hline
+\end{tabular} & 
+
+ \begin{tabular}{||c||c||c||}
+ \hline \hline
+ \cellcolor{red} &  &  \\ \hline \hline
+  & \cellcolor{red} &  \\ \hline \hline
+  & \cellcolor{red} &  \\ \hline \hline
+\end{tabular} &
+
+ \begin{tabular}{||c||c||c||}
+ \hline \hline
+  &  & \cellcolor{red} \\ \hline \hline
+ \cellcolor{red} &  &  \\ \hline \hline
+  &  & \cellcolor{red} \\ \hline \hline
+\end{tabular} \\ \hline \hline
+
+\end{tabular}
+
+\end{table}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Examples of Nesting}
+\begin{itemize}
+ \item Plots in a field with 1 treatment each
+ \item Sampling a subject over time (where time doesn't influence the response)
+ \item Gender of individuals (individual nested in gender)
+ \item Experimental units manipulated by the same machine
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A Greenhouse Experiment testing C:N Ratios}
+Sam was testing how changing the C:N Ratio of soil affected plant leaf growth.  He had 3 treatments.  A control, a C addition, and a N addition.  To ensure that any one measurement of one leaf wasn't a fluke, Sam measured 3 leaves per plant.  The design is as follows:\\ \hfill \\
+\pause
+3 Treatments (Control, C, N) \\
+4 Pots of Plants per Treatment \\
+3 Leaves Measured Per Pot\\
+ \hfill \\
+ \pause
+
+ 1) How many replicates are there per treatment?\\
+ 2) Are measurements independent?\\
+ 3) What do we use for our denominator Mean Square for F Test?\\
+ 4) What is the denominator degrees of freedom?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A Greenhouse Experiment testing C:N Ratios}
+<<plot_plantData, echo=FALSE>>=
+@
+Data Points are Not Independent!
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Option 1: Averaging}
+If your design is balanced, and you don't care about the within pot variance, just average within each pot.
+<<plot_plantData_means, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Option 1: Averaging}
+<<lm_plants_means, echo=FALSE>>=
+@
+You can use residuals to evaluate within plot variation.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Option 2: Classical ANOVA Error Decomposition with Expected Mean Squares}
+\scriptsize{$$SS_{Total} = SS_{Treatment} + SS_{Pot Error} + SS_{Within Pot Error}$$}
+<<lm_plants_Error, echo=TRUE, size="scriptsize">>=
+@
+\pause
+<<lm_plants_Error_anova, echo=TRUE, size="scriptsize">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Option 3: Multilevel/Clustered/Hierarchical/Mixed Model}
+
+$$ y_{i} = \alpha_{j[i]} + \beta_{i}X + \epsilon_{ij} $$ \\
+\hfill \\
+$$\alpha_{j[i]}  \sim N(\mu_{\alpha}, \sigma_{\alpha}^{2})$$\\
+\hfill \\
+$$\epsilon_{ij} \sim N(0, \sigma^{2})$$\\
+\hfill \\
+where i = individual sample, j = group
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Types of Multilevel Models}
+
+Varying Intercept: $ y_{i} = \alpha_{j[i]} + \beta_{i}X + \epsilon_{ij} $ \\
+$\alpha_{j[i]}  \sim N(\mu_{\alpha}, \sigma_{\alpha}^{2})$\\
+\hfill \\
+
+Varying Slope: $ y_{i} = \alpha + \beta_{[j]i}X + \epsilon_{ij} $ \\
+$\beta_{j[i]}  \sim N(\mu_{\beta}, \sigma_{\beta}^{2})$\\
+
+\hfill \\
+Varying Slope \& Intercept:  $ y_{i} = \alpha_{j[i]} + \beta_{[j]i}X + \epsilon_{ij} $ \\
+$\begin{pmatrix}
+\alpha_{[i]j}  \\  \beta_{[i]j}  \end{pmatrix} \sim N\left ( \begin{pmatrix} \mu_{\alpha}  \\  \mu_{\beta}  \end{pmatrix} ,  \begin{pmatrix}  \sigma_{\alpha}^{2}& \rho\sigma_{\alpha}\sigma_{\beta}\\ \rho\sigma_{\alpha}\sigma_{\beta} & \sigma_{\beta}^{2} \end{pmatrix}  \right )$
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Types of Multilevel Models}
+
+<<show_types, echo=FALSE, out.height="0.5\\textwidth", out.width="0.9\\textwidth", fig.width=9>>=
+@
+
+Unlike the General Linear Model, slopes and Intercepts are Constrained
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fixed versus Random Effects}
+{\bf Fixed Effect:} Effects that are constant across populations.
+{\bf Random Effect:} Effects that vary are random outcomes of underlying processes.\\ \pause
+\hfill \\ 
+Gelman and Hill (2007) see the distinction as artificial.  Fixed effects are special cases of random effects where the variance is infinite.  The model is what you should focus on.\pause \\
+\hfill \\ You will also hear that 'random effects' are effects with many levels, but that you have not sampled all of them, wheras a for fixed effects, you have sampled across the entire range of variation.  This is subtly different, and artificial.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Some Points about Multilevel Models}
+\begin{itemize}
+ \item Flexible.  Can accomodate varying slope, intercept, intercept-slope models
+ \item Solved using Restricted Maximum Likelihood (REML).  ML estimation produces downward biased estimates of random effect variances.
+ \item As group level effects are drawn from the same distribution, Best Linear Unbiased Predictors (BLUPs) are shrunk towards grand mean - basically, we use information from all groups to inform within group means - useful for unbalanced designs.
+ \item We will use one formulation to evaluate DF for p values, etc., but this is an ongoing research topic.
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{This is a BIG Topic, We are Diving Skin Deep}
+Useful Texts (which may show up in the future)
+\begin{itemize}
+ \item Gelman A, Hill J, (2006) Data Analysis Using Regression and Multilevel/Hierarchical Models. Cambridge University Press
+ \item Zuur AF, Ieno EN, Walker NJ, Saveliev AA, Smith G (2009) Mixed Effects Models and
+Extensions in Ecology with R. Springer, New York.
+\item Pinheiro J, Bates D (2000) Mixed Effects Models in S and S-Plus. Springer-Verlag, New York,
+USA.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{This is a BIG Topic, We are Diving Skin Deep}
+
+Blogs that Discuss Mixed Models Regularly
+\begin{itemize}
+ \item \url{http://www.quantumforest.com/}
+ \item \url{http://andrewgelman.com}
+ \item \url{https://stat.ethz.ch/mailman/listinfo/r-sig-mixed-models}
+\end{itemize}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Many R Packages for Multilevel Models}
+\begin{itemize}
+ \item nlme - from Pinhero and Bates 2009
+ \item lmer - bleeding edge by Doug Bates
+ \item MCMCglmm - uses Bayesian techniques \& MCMC (next week!)
+ \item glmmADMB - interface for AD Model Builder
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Back to A Greenhouse Experiment testing C:N Ratios}
+<<plot_plantData, echo=FALSE>>=
+@
+Leaf Growth = Treatment Effect +  Pot Variation + Error
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fitting a Varying Intercept Model for the Greenhouse Experiment}
+<<plant_lme>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Diagnostics:}
+\begin{enumerate}
+  \item Is there a relationship between fitted and residual values?
+  \item Are the residuals normally distributed?
+  \item Is there a relationship between fitted and residual values {\emph at the group level}?
+  \item Are the random effects normally distributed?
+ \end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fitted Values at the Group or Individual Level}
+<<fittedCompare, size="tiny">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Residual Values at the Group or Individual Level}
+<<residualsCompare, size="tiny">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Residuals v. Fitted at Individual Level}
+<<diagnostic1>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Normality of Residuals}
+<<qqresiduals>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Residuals v. Fitted at Group Level}
+<<diagnostic0>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{BLUPs of Random Effects}
+<<ranef_plants>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Normality of Random Effects}
+<<qqranef>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Normality of Residuals}
+<<qqresiduals>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Evaluating the Greenhouse Experiment}
+<<plant_lme_anova>>=
+@
+DF Denominator = \# Groups - DF Treatment - 1\\
+Note type="marginal" - type II
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Why F-Tests for Fixed Effects?}
+\begin{itemize}
+ \item F values calculated using differences in Residual Sums of Squares
+ \item F tests with DF = \# Groups - DF Treatment - 1 are conservative
+ \item But, $\chi^2$ tests for fixed effects are anti-conservative (type I prone)
+ \item Use $\chi^2$ tests for random effects - for a REML fit without any random effects, use {\tt gls}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Random Effects }
+<<plant_lme_summary, out.lines=1:11>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{T-Tests for Fixed Effects}
+<<plant_lme_summary, out.lines=12:15, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Correlation Between Fixed Effects}
+<<plant_lme_summary, out.lines=16:21, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Rest...}
+<<plant_lme_summary, out.lines=21:35, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fixed Effects v. Net Coefficients}
+<<fixef_coef>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Visualizing Fixed Effects}
+<<visualizeFit0, echo=1>>=
+@
+Note use of altered model for ease of plotting
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Contrasts with Fixed Effects}
+<<contrastPlants>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Visualizing Fixed and Random Effects}
+<<visualizeFit1, echo=FALSE>>=
+@
+For more on confidence intervals, see \url{http://glmm.wikidot.com/faq}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Random Effects on Richness}
+\begin{itemize}
+ \item Fit data from RIKZ survey
+ \item Random Effect of Beach ONLY
+ \item Compare to No Beach Effect Model (gls)
+ \item Visualize Random Effects
+\end{itemize}
+<<se_ranef>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fitting Comparison Models}
+<<rikzFit>>=
+@ \pause
+<<rikz_evalRanef>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fit Is Ok...}
+<<rikz_diag, echo=FALSE>>=
+@ 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fit Is Ok...}
+<<rikz_diag1, echo=FALSE>>=
+@ 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fit Is Ok...}
+<<se_ranef>>=
+@ 
+<<rikz_ranef_with_error, echo=FALSE>>=
+@ 
+\end{frame}
+
+
+
+
+\end{document}

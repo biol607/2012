@@ -1,0 +1,74 @@
+\documentclass{article}
+\title{Power and Sample Size}
+\author{Biol 697}
+
+<<set-options, echo=FALSE, cache=FALSE>>=
+read_chunk("./powerSim.R")
+opts_chunk$set(tidy = FALSE)
+#opts_chunk$set(size = "small")
+#opts_chunk$set(width = 60)
+#opts_chunk$set(fig.align = "center")
+#opts_chunk$set(out.height="1\\textwidth")
+#opts_chunk$set(out.width="1\\textwidth")
+@
+
+\begin{document}
+\maketitle
+
+So, in class today, we talked about a simulation based approach to assessing power.  I didn't get quite the time to go into the code of such a simulation in sufficient detail, so, here's the example layed out much more clearly, piece by piece.\\
+
+Remember, the problem is that we want to know whether administering a drug changes hear rate.  $H_{o}$ is that the average effect of the drug on heart rate is 0. In actuality, is speeds heart rate up by 15 beats per minute. What is the effect of sample size of patients on power, assuming a SD of 6?
+
+
+How do we answer this question?  Well, there are three steps.
+
+\section{Simulate the experiment}
+The first thing we want to do is simulate many trials of administering a drug to a sample population and seeing the average change in heart rate.  Hopefully this is old hat, but, let's walk through it.\\
+
+The first thing we're doing is setting a seed (so this is repeatable) as well as other parameters that may be used throughout the simulation.  We may want to tweak the simulation in the future, and we want to be able to do that by changing one number in one place, not 10 numbers in ten places.
+
+<<start>>=
+@
+
+The next thing we'll do, is loop over all of those possible simulated experiments.  With the vector n, we have the sample size for each sim.  Great.  We can use that do draw $n_{i}$ random normal variables, then get their mean which we'll use to fill in our vector {\tt vec}.
+
+<<createSims>>=
+@
+
+Great - let's see what this looks like:
+
+<<plotSims>>=
+@
+
+As you can see, with a larger sample size, we get closer to a mean of 15, although there's still a good bit of variation.
+
+\section{Calculating p values for each simulation}
+Next, as each simulation is its on test statistic, we need to calculate the p-value for each one.  Now, our null distribtion has a mean of 0, but, we're allowing it to have the same SD as our population.  So, we want to compare each mean to a normal distribution with mean 0 and SD of 6.  \\
+
+Now, this is a 2-tailed test, so, we have two issues to grapple with.  First, we're going to have values that fall in the lower and upper tails of this null normal distribution (i.e., they can be positive and negative).  Fortunately, we can just take the absolute value of any simulated mean, and then use the lower.tail argument to get the correct output from {\tt pnorm}.  We could have also done {\tt 1-pnorm} and gotten the same result.  Second, because this is a two-tailed test, we're going to need to multiple the result by 2.\\
+
+Rather than looping over the whole thing, {\tt pnorm} is nice in that we can give it a vector as an argument and it will give us the correct vector of responses.  We'll talk about \emph{vectorization} another day.
+
+<<calculateP>>=
+@
+
+Great, now let's plot the result.
+<<plotP>>=
+@
+
+\section{Assessing Power}
+
+Now that we have a vector of p values that are tied to a vector of sample sizes, we can use this and a little clever application of the which statement to calculate the power at each sample size.  Remember, power = 1 - the probability of falsely failing to reject the null hypothesis.\\
+
+So, what we'll do is create a blank that is the same length as the number of sample sizes we have (i.e., 10, as the possible sample sizes are 1, 2, 3...10).  Next, we'll loop over all of those sample sizes.  For each one, we'll extract just the piece of the {\tt pvec} that matches the relevant sample size, and then look at the fraction of tests that got it wrong.
+
+<<powerLoop>>=
+@
+
+Now let's plot that power vector to see how n and power are related.
+
+<<plotPower>>=
+@
+
+Great - we can see that power increases as sample size increases.  However, what's great is that our difference is so large that even at low sample sizes, we have decent power.  Try playing around the the attached script a bit.  Increase the SD.  Change the mean.  What do you see?  For example, if we kick the SD up very high, we actually find that power decreases with sample size.  This is counter-intuitive, but, remember, with a large SD, we're very likely to include 0 in our 95\% confidence interval.  This, we SHOULD have low power, as we've setup a simulation where 0 is possible as an estimate  A single value alone may not make for a good test of our hypothesis, and we'll need some better statistical techniques.
+\end{document}

@@ -1,0 +1,90 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% TEST
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\usepackage{colortbl}
+
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<set-options, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_14.R")
+opts_chunk$set(size = "footnotesize")
+opts_chunk$set(fig.align = "center")
+opts_chunk$set(out.height="0.55\\textwidth")
+opts_chunk$set(out.width="0.55\\textwidth")
+par(mar=c(5,4,2,2))
+@
+
+<<lecture14prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Nested Design}
+
+\begin{table}[htbp]
+
+\begin{tabular}{||c||c||c||}
+ \hline \hline
+TREATMENT \begin{tabular}{||c||c||c||}
+ \hline \hline
+\cellcolor{red} - & - & - \\ \hline \hline
+ - & \cellcolor{red}- & \cellcolor{red}- \\ \hline \hline
+ - & - & - \\ \hline \hline
+\end{tabular} & 
+
+ \begin{tabular}{||c||c||c||}
+ \hline \hline
+ - & - & \cellcolor{red}- \\ \hline \hline
+\cellcolor{red} - & - & - \\ \hline \hline
+ \cellcolor{red}- & - & - \\ \hline \hline
+\end{tabular} &
+
+ \begin{tabular}{||c||c||c||}
+ \hline \hline
+ - & - & - \\ \hline \hline
+ - & \cellcolor{red}- & - \\ \hline \hline
+ \cellcolor{red}- & - & \cellcolor{red}- \\ \hline \hline
+\end{tabular} \\ 
+ 
+ \hfill \\
+ 
+ 
+ CONTROL \begin{tabular}{||c||c||c||}
+ \hline \hline
+ \cellcolor{red}- & - & - \\ \hline \hline
+ - & - & \cellcolor{red}- \\ \hline \hline
+ - & - & \cellcolor{red}- \\ \hline \hline
+\end{tabular} & 
+
+ \begin{tabular}{||c||c||c||}
+ \hline \hline
+ \cellcolor{red}- & - & - \\ \hline \hline
+ - & \cellcolor{red}- & - \\ \hline \hline
+ - & \cellcolor{red}- & - \\ \hline \hline
+\end{tabular} &
+
+ \begin{tabular}{||c||c||c||}
+ \hline \hline
+ - & - & \cellcolor{red}- \\ \hline \hline
+ \cellcolor{red}- & - & - \\ \hline \hline
+ - & - & \cellcolor{red}- \\ \hline \hline
+\end{tabular} \\ \hline \hline
+
+\end{tabular}
+
+\end{table}
+
+\end{frame}
+
+
+
+\end{document}

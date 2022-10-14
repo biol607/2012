@@ -1,0 +1,422 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 20 - Multiple Regression
+%%%   
+%%%
+%%% Last Modified 11/6/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<set-options, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_20.R")
+
+opts_chunk$set(size = "footnotesize")
+opts_chunk$set(fig.align = "center")
+opts_chunk$set(out.height="0.55\\textwidth")
+opts_chunk$set(out.width="0.55\\textwidth")
+opts_chunk$set(fig.height=5)
+opts_chunk$set(fig.width=5)
+opts_chunk$set(tidy=FALSE)
+opts_chunk$set(prompt=FALSE)
+opts_chunk$set(warning=FALSE)
+opts_chunk$set(comment="#")
+
+par(mar=c(5,4,2,2))
+@
+
+<<lecture20prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+<<zoop_prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge Multiple Predictor Variables: Regression \& the General Linear Model
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Contrasts for a Multiway ANOVA}
+<<zoop_contrast, message=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge Multiple Predictor Variables: Regression \& the General Linear Model
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{One-Way ANOVA Graphically}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{./pics-20/anova.png}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Two-Way ANOVA Graphically}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{./pics-20/2way_anova.png}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Multiple Linear Regression?}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{./pics-20/regression1.png}
+\end{center}
+\pause
+Note no connection between predictors, as in ANOVA.  This is ONLY true if we have manipulated it so that there is no relationship between the two.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Multiple Linear Regression}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{./pics-20/regression2.png}
+\end{center}
+Curved double-headed arrow indicates COVARIANCE between predictors that we must account for.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Semi-Partial Correlation}
+\begin{columns}
+\column{0.5\paperwidth}
+\begin{itemize}
+ \item Semi-Partial correlation asks how much of the variation in a response is due to a predictor after the contribution of other predictors has been removed
+ \\ \hfill \\
+ \item How much would $R^2$ change if a variable was removed?
+ \\ \hfill \\
+
+ \item A / (A+B+C+D)
+ \\ \hfill \\
+
+ \item $sr_{y1} = \frac {r_{y1} - r_{y2}y_{12}}{\sqrt{1-r^2_{12}}}$
+\end{itemize}
+
+\column{0.5\paperwidth}
+\includegraphics[width=1\textwidth]{./pics-20/semipartial.png}
+
+\end{columns}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Calculating Multiple Regression Coefficients with OLS}
+$$\boldsymbol{Y} = \boldsymbol{b X} + \boldsymbol{\epsilon} $$
+\pause
+
+Remember in Simple Linear Regression $b = \frac{cov_{xy}}{var_{x}}$?\\
+\pause \hfill \\
+In Multiple Linear Regression $\boldsymbol{b} = \boldsymbol{cov_{xy}}\boldsymbol{S_{x}^{-1}}$ \\
+\hfill \\
+where $\boldsymbol{cov_{xy}}$ is the covariances of $\boldsymbol{x_i}$ with $\boldsymbol{y}$ and $\boldsymbol{S_{x}^{-1}}$ is the variance/covariance matrix of all \emph{Independent variables}\\
+\pause \hfill \\
+OR $bi = \frac{cov_{xy} - \sum cov_{x1xj}b_{j}}{var_(x)}$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Calculating Multiple Regression Coefficients with OLS}
+$$\boldsymbol{Y} = \boldsymbol{b X} + \boldsymbol{\epsilon} $$
+\pause
+
+Coefficient Estimates: $E[\boldsymbol{\hat{\beta}]} = \boldsymbol{cov_{xy}}\boldsymbol{S_{x}^{-1}}$ \\
+\hfill \\
+Coefficient Variance: $Var[\hat{\beta_{i}}] = \frac{\boldsymbol{\sigma^2}}{\boldsymbol{SXX_{i}}}$ \\
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{ % all template changes are local to this group.
+\setbeamertemplate{navigation symbols}{}
+\usebackgroundtemplate{\includegraphics[height=\paperheight]{./pics-20/fires.jpg}}
+
+\begin{frame}[plain]
+  \begin{minipage}[t][0.8\textheight][t]{\textwidth}
+\end{minipage}
+
+\colorbox{yellow}{\parbox[c]{1\textwidth}{Five year study of wildfires \& recovery in Southern California shurblands in 1993. 90 plots (20 x 50m)\\ (data from Jon Keeley et al.)}}
+\end{frame}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Many Things may Influence Species Richness}
+<<keeley_pairs, out.height="0.7\\textwidth", out.width="0.7\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Many Things may Influence Species Richness}
+<<klm, size="normalsize">>=
+@
+\end{frame}
+
+%collinearity issues...VIF!
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Checking for Multicollinearity: Correlation Matrices}
+<<klm_cor, size="normalsize">>=
+@
+Correlations over 0.4 can be problematic, but, they may be OK even as high as 0.8.  Beyond this, are you getting unique information from each variable?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Checking for Multicollinearity: Variance Inflation Factor}
+
+$$VIF = \frac{1}{1-R^2_{j}}$$
+<<klm_vif, size="normalsize">>=
+@
+VIF $>$ 5 or 10 can be problematic and indicate an unstable solution.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Other Diagnostics as Usual!}
+<<klm_diag, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Other Diagnostics as Usual!}
+<<klm_diag2, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{New Diagnostic for Outliers: Leave One Out}
+<<klm_leaveOneOut>>=
+@
+\end{frame}
+
+
+%assessment with type II SS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Which Variables Explained Variation: Type II Marginal SS}
+<<keeley_anova, size="normalsize">>=
+@
+If order of entry matters, can use type I.  Remember, what models are you comparing?
+\end{frame}
+
+%added variable plots v. CR plots
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The coefficients}
+<<keeley_coef>>=
+@
+If order of entry matters, can use type I.  Remember, what models are you comparing?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Comparing Coefficients on the Same Scale}
+$$r_{xy} = b_{xy}\frac{sd_{x}}{sd_{y}}$$
+<<keeley_std, size="normalsize">>=
+@
+\end{frame}
+
+%2D viz strategies
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Visualization of Multivariate Models is Difficult}
+<<klm_see_effects, size="normalsize", echo=FALSE, fig.height=6, fig.width=9, out.height="0.6\\textwidth", out.width="0.9\\textwidth">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Component-Residual Plots Aid in Visualization}
+<<klm_crplot, size="normalsize", echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Added Variable Plots for Unique Contribution of a Variable}
+<<klm_avplot, size="normalsize", echo=FALSE>>=
+@
+Analagous to the A part of the three-circle diagram from earlier.
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Bird Species Richness}
+\begin{columns}
+\column{0.5\paperwidth}
+
+\begin{itemize}
+\item Which bird abundances influence Species Richness?
+\item Can we use every variable?
+\item Visualize Resuits
+\end{itemize}
+
+\column{0.5\paperwidth}
+<<wnv_pairs, echo=FALSE, out.height="1\\textwidth", out.width="1\\textwidth">>=
+@
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{All of the Birds!}
+<<wnv_viflm, size="normalsize">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Correlation Problems}
+<<wnv_vif_cor, size="normalsize">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Multicollinearity Problems}
+<<wnv_vif, size="normalsize">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Odd Results from Robins and Sparrows}
+<<wnv_vif__summary>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A New Model}
+<<wnv_lm>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{No Multicollinearity Problem}
+<<wnv_lm_vif>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A Corvid Story}
+<<wnv_lm_anova>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A Corvid Story}
+<<wnv_lm_crplot>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The General Linear Model}
+$$\boldsymbol{Y} = \boldsymbol{\beta X} + \boldsymbol{\epsilon} $$
+\begin{itemize}
+\item This equation is huge.  X can be anything - categorical, continuous, etc.
+\item One easy way to see this is if we want to control for the effect of a covariate - i.e., ANCOVA
+\item Type of SS matters, as 'covariate' is de facto 'unbalanced'
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Neanderthals and the General Linear Model}
+\begin{center}
+ \includegraphics[width=0.6\textwidth]{./pics-19/neanlooking.jpeg}
+\end{center}
+
+How big was their brain?
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Analysis of Covariance (control for a covariate)}
+<<neand_model, include=FALSE, echo=FALSE>>=
+@
+<<neand_plot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+ANCOVA: Evaluate a categorical effect(s), controlling for a \emph{covariate} (parallel lines)\\
+Groups modify the \emph{intercept}.
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Fit like a cave man}
+\begin{itemize}
+\item Fit a model that will describe brain size from this data
+\item Does species matter?  Compare type I and type II SS results
+\item Use Component-Residual plots to evaluate results
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Type of SS Matters}
+<<neand_model, echo=FALSE>>=
+@
+<<anova_compare, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Species Effect}
+<<neand_cr, echo=FALSE, fig.height=6, fig.width=9, out.height="0.6\\textwidth", out.width="0.9\\textwidth">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Species Effect}
+<<neand_coef>>=
+@
+\end{frame}
+
+\end{document}

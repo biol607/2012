@@ -1,0 +1,103 @@
+\documentclass{article}
+
+\begin{document}
+
+\section{Mudge's Optimal Alpha}
+
+
+\subsection{}
+Let's get warmed up.  The suppose you're looking at the deviation in temperature from the long-term average from 10 weather stations across the state.  You want to know if this year is different from the long-term average, so, you calculate the deviation from the long-term average.  Let's say this is drawn from a normal distribution, with mean 2 and sd 3.  Remember to set a seed so that your results can be repeated!
+<<tempDeviation>>=
+set.seed(697)
+tempData <- rnorm(10, mean=2, sd=3)
+@
+
+Now, how do we go from this data to knowing the optimal alpha to evaluate whether there has been a change in temperature?\\
+\hfill \\
+
+\subsection{T-Test!}
+To start with, let's calculate the naive p-value for our data and evaluate it.  Write a function to conduct a one sample t-test and run it against this data.  Remember to check our results against R's {\tt t.test} function.
+
+
+<<t, echo=FALSE, include=FALSE>>=
+se <- function(sample) sd(sample)/sqrt(length(sample))
+
+tTest <- function(sample, nullMu=0){
+  n<-length(sample)
+  pt(abs((mean(sample)-nullMu)/se(sample)), df=n-1, lower.tail=F) * 2
+}
+
+tTest(tempData)
+@
+
+\subsection{In which we begin simulations}
+Now, in order to calculate the optimal alpha, you need to calculate beta given some alpha value.  We'll accomplish this in two steps.  First, write a function that will give you a vector of p values from t-tests on simulated data.  This function should accept the number of simulations, the sample size, an effect size, and a sample standard deviation as it's arguments at the very least.  Now, create a vector of   5000 simulated p values using this function given our sample size, our critical effect size of 2 degrees celsius and our standard deviation {\emph FROM OUR SAMPLE} (i.e.,  it should be drawn from the actual data - this is a key part of Mudge's methodology).
+<<pVec, echo=FALSE, include=FALSE>>=
+
+
+pvecGen <- function(n.sims=5000, n, ybar=0, sd=1, nullMu=0){
+  pv <- rep(NA, n.sims)
+  for(i in 1:n.sims){
+    samp<-rnorm(n, mean = ybar, sd=sd)
+    pv[i] <- tTest(samp)
+  }
+  
+  pv
+}
+
+set.seed(081178)
+pVector<-pvecGen(n=10, ybar=2, sd=sd(tempData))
+@
+
+\subsection{Power!}
+Now that you have a vector of simulated p-values, write a function that will take such a vector, and calculate it's power given an alpha.  What is the power of your test, given an alpha of 0.05?  What is the value of w?
+
+<<powerFun, echo=FALSE, include=FALSE>>=
+power <-function (p, alpha=0.05) 1-sum(p > alpha)/length(p)
+
+power(pVector)
+@
+
+\subsection{Wrappers}
+Before we jump into the final section, it's often convenient to write a wrapper function.  That is, a function, that will run multiple other functions, in sequence, and give a simple output.  That way, as you write code later on, you can write more cleanly, only caling the wrapper function to perform multiple complicated operations.  Write a wrapper function here that, given a critical effect size, a sample size, an alpha level,  a standard deviation, and number of simulations, will use those functions you have just written to calculate power.  One set of arguments in.  A single number out.
+
+<<powerWrapper, echo=FALSE, include=FALSE>>= 
+powerSims<-function(effectSize=0, sampleSize=5, alpha=0.05, sd=1, n.sims=5000, nullEffect=0){
+  p <- pvecGen (n.sims=n.sims, n=sampleSize, ybar=effectSize, sd=sd, nullMu = nullEffect)
+  return(power(p, alpha=alpha))
+}
+@
+
+\subsection{Mudge's Optimal Alpha}
+
+OK.  You can now feed a bunch of arguments to a single function and get back 1-$\beta$ - your power.  This is all you need to calculate w for any given alpha.  Generate a curve for alpha versus w.  Find the minimum value of w, and report what the value of $\alpha$ and power are at that point.  Show the graph.  Try using abline (base) or geom\_hline (ggplot2) to show where that optimal alpha occurs.\\
+\hfill \\
+Based on the optimal alpha shown here, what do our results say about the null hypothesis this year's temperature is no different than the long-term average?
+
+<<MudgeCurve, echo=FALSE, include=FALSE>>=
+#initial vectors and parameter
+alphaVec<-seq(0.01,0.5,.01)
+betaVec <- rep(NA, length(alphaVec))
+effect <- 2
+sampleSD = sd(tempData)
+
+for(i in 1:length(alphaVec)){
+  betaVec[i] <- 1 - powerSims(effect, alpha=alphaVec[i], sd=sampleSD, n.sims=5000)
+}
+wVec <- (alphaVec + betaVec)/2
+
+plot(alphaVec, wVec, type="l")
+abline(a=min(wVec), b=0, col="red", lty=2, lwd=2)
+
+min(wVec)
+alphaVec[which(wVec==min(wVec))]
+1-betaVec[which(wVec==min(wVec))]
+@
+
+\subsection{Extra Credit}
+How does the optimal alpha change with sample size?  Try it from 3:15.  Show a faceted plot of the curves and the relationship between sample size and optimal alpha
+<<MudgeVariation, echo=FALSE>>=
+@
+
+
+\end{document}

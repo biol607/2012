@@ -1,0 +1,42 @@
+\documentclass{article}
+
+<<hook-printfun, echo=FALSE>>=
+knit_hooks$set(printfun = function(before, options, envir) {
+  if (before) return()
+  txt = capture.output(dump(options$printfun, '', envir = envir))
+  ## reformat if tidy=TRUE
+  if (options$tidy) txt = formatR::tidy.source(text = txt, output = FALSE)$text.tidy
+  con = textConnection(txt)
+  on.exit(close(con))
+  out = capture.output({
+    highlight::highlight(con, renderer = highlight::renderer_latex(document= FALSE), 
+                         showPrompts = options$prompt, size = options$size)
+  })
+  paste(out, collapse = '\n')
+})
+@
+
+\begin{document}
+
+<<ordinary-print>>=
+fivenum
+@
+
+<<test-fivenum, printfun='fivenum', echo=FALSE>>=
+# source code of fivenum
+@
+
+<<my-fun, echo=FALSE>>=
+foo = function(a = 1L) {
+  # here is a comment
+  1+2
+}
+@
+<<print-my-fun, printfun='foo', prompt=TRUE>>=
+# here is the foo function, printed with messy prompts
+@
+
+% or not formatted
+<<print-my-fun, printfun='foo', tidy=FALSE>>=
+@
+\end{document}

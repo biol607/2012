@@ -1,0 +1,315 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 21 - ANCOVA and Interactions
+%%%   
+%%%
+%%% Last Modified 11/8/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<set-options, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_21.R")
+
+opts_chunk$set(size = "footnotesize")
+opts_chunk$set(fig.align = "center")
+opts_chunk$set(out.height="0.55\\textwidth")
+opts_chunk$set(out.width="0.55\\textwidth")
+opts_chunk$set(fig.height=5)
+opts_chunk$set(fig.width=5)
+opts_chunk$set(tidy=FALSE)
+opts_chunk$set(prompt=FALSE)
+opts_chunk$set(warning=FALSE)
+opts_chunk$set(comment="#")
+
+par(mar=c(5,4,2,2))
+@
+
+<<lecture21prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge The General Linear Model \& Interaction Effects
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Problem: How Do you Evalute a Categorical Predictor in the Presence of a Continuous Predictor?}
+<<neand_plot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Problem: What if Categorical Predictors are Not Additive?}
+<<algae_plot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Neanderthals and the General Linear Model}
+\begin{center}
+ \includegraphics[width=0.6\textwidth]{./pics-19/neanlooking.jpeg}
+\end{center}
+
+How big was their brain?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Problem: How Do you Evalute a Categorical Predictor in the Presence of a Continuous Predictor?}
+<<neand_plot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Means Look the Same...}
+<<neand_boxplot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But there appears to be a Relationship Between Body and Brain Mass}
+<<neand_plot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{And Mean Body Mass is Different}
+<<neand_boxplot2, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The General Linear Model}
+$$\boldsymbol{Y} = \boldsymbol{\beta X} + \boldsymbol{\epsilon} $$
+\begin{itemize}
+\item This equation is huge.  X can be anything - categorical, continuous, etc.
+\item We can control for the effect of a covariate - i.e., ANCOVA
+\item Type of SS matters, as 'covariate' is de facto 'unbalanced'
+\end{itemize}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Analysis of Covariance (control for a covariate)}
+<<neand_model, include=FALSE, echo=FALSE>>=
+@
+<<neand_plot_fit, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+ANCOVA: Evaluate a categorical effect(s), controlling for a \emph{covariate} (parallel lines)\\
+Groups modify the \emph{intercept}.
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Fit like a cave man}
+\begin{itemize}
+\item Fit a model that will describe brain size from this data
+\item Does species matter?  Compare type I and type II SS results
+\item Use Component-Residual plots to evaluate results
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Type of SS Matters}
+<<neand_model, echo=FALSE>>=
+@
+<<anova_compare, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Species Effect}
+<<neand_cr, echo=FALSE, fig.height=6, fig.width=9, out.height="0.6\\textwidth", out.width="0.9\\textwidth">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Species Effect}
+<<neand_coef>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Species Effect}
+<<neand_contrast, message=FALSE>>=
+@
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How to Plot a Fit Model}
+
+<<neand_plot_fit, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How to Properly Plot a Fit Model}
+
+<<neand_plot_fit, fig.keep="none">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Intertidal Grazing!}
+\center \includegraphics[width=0.7\textwidth]{./pics-21/grazing-expt.jpeg} \\
+Do grazers reduce algal cover in the intertidal?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Experiment Replicated on Two Ends of a gradient}
+\center \includegraphics[width=0.7\textwidth]{./pics-21/zonation.jpg} \\
+Is this how you would have done it?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Problem: What if Categorical Predictors are Not Additive?}
+<<algae_plot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\pause You have replication at the level of block (tide height) and treatment (grazing)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What if you fit a linear model?}
+<<graze_linear>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Pattern in Fitted v. Residuals}
+<<graze_linear_diagnostics, echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Nonlinearity!}
+<<graze_linear_tukey>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The General Linear Model}
+$$\boldsymbol{Y} = \boldsymbol{\beta X} + \boldsymbol{\epsilon} $$
+\begin{itemize}
+\item $\boldsymbol X$ can have Nonlinear predictors
+\item e.g., It can encompass A, B, and A*B
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How do you Fit a Multiplicative Effect?}
+<<graze_interaction>>=
+@
+\pause
+<<graze_interaction2>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{No More Pattern in Fitted v. Residuals}
+<<graze_int_resplot, echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{F-Tests for Interactions}
+
+$SS_{Total} = SS_{A} + SS_{B} + SS_{AB} +SS_{Error}$ \\ 
+
+\begin{center}
+$SS_{AB} = n\sum_{i}\sum_{j}(\bar{Y_{ij}} - \bar{Y_{i}}- \bar{Y_{j}} - \bar{Y})^{2}$, df=(i-1)(j-1)\\ \hfill \\
+
+\end{center}
+\pause
+MS = SS/DF, e.g, $MS_{W} = \frac{SS_{W}}{n-k}$\\
+\hfill \\
+
+\begin{center}$F = \frac{MS_{AB}}{MS_{Error}}$ with DF=(j-1)(k-1),n - 1 - (i-1) - (j-1) - (i-1)(j-1) \\ \end{center}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ANOVA shows an Interaction Effect}
+<<graze_interaction_anova, echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What does the Interaction Coefficient Mean?}
+<<graze_interaction_coefs, echo=FALSE, size="tiny">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What does the Interaction Coefficient Mean?}
+<<algae_plot, fig.height=5, fig.width=6, out.height="0.5\\textwidth", out.width="0.6\\textwidth", echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Posthoc with Simple Effects Model}
+<<graze_posthoc, eval=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Posthoc with Simple Effects Model}
+<<graze_posthoc, echo=FALSE, size="tiny">>=
+@
+\end{frame}
+
+
+\end{document}

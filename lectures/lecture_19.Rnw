@@ -1,0 +1,349 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 19 - Multiple ANOVA
+%%%   
+%%%
+%%% Last Modified 11/6/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<set-options, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_19.R")
+
+opts_chunk$set(size = "footnotesize")
+opts_chunk$set(fig.align = "center")
+opts_chunk$set(out.height="0.55\\textwidth")
+opts_chunk$set(out.width="0.55\\textwidth")
+opts_chunk$set(fig.height=5)
+opts_chunk$set(fig.width=5)
+opts_chunk$set(tidy=FALSE)
+opts_chunk$set(prompt=FALSE)
+opts_chunk$set(warning=FALSE)
+opts_chunk$set(comment="#")
+
+par(mar=c(5,4,2,2))
+@
+
+<<lecture19prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge Multiple Predictor Variables: ANOVA
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What if you manipulate two factors?}
+\begin{center}
+
+\begin{tabular}{|c|c|c|c|} \hline
+ Block 1 & Block 2 & Block 3 & Block 4 \\ \hline \hline
+ A & B & C & D \\ \hline
+ B & C & D & A \\ \hline
+ C & D & A & B \\ \hline
+ D & A & B & C \\ \hline
+\end{tabular}
+\\ \hfill \\
+Randomized Controlled Blocked Design: Design where each treatment only has 1 replicate of a second treatment\\
+\pause
+Note: Above is a Latin Squares Design - Every row and column contains one replicate of a treatment.
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Effects of Stickleback Density on Zooplankton}
+\begin{center}
+ \includegraphics[width=0.4\textwidth]{./pics-19/daphnia.jpeg}
+ \includegraphics[width=0.5\textwidth]{./pics-19/threespine_stickleback.jpeg} \\
+\end{center}
+Units placed across a lake so that 1 set of each treatment was 'blocked' together
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Treatment and Block Effects}
+<<zooplankton_boxplot, echo=FALSE, fig.height=6, fig.width=9, out.height="0.6\\textwidth", out.width="0.9\\textwidth">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model for Multiway ANOVA/ANODEV}
+$$ y_{k} = \beta_{0} + \sum \beta_{i}x_{i} + \sum \beta_{j}x_{j} + \epsilon_{k}$$
+$$ \epsilon_{ijk} \sim N(0, \sigma^{2} ), \qquad x_{i} = 0,1  $$
+\pause Or, with matrices...
+$$\boldsymbol{Y} = \boldsymbol{\beta X} + \boldsymbol{\epsilon} $$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Model for Multiway ANOVA/ANODEV}
+$$\boldsymbol{Y} = \boldsymbol{\beta X} + \boldsymbol{\epsilon} $$
+
+
+$$\begin{pmatrix} y1 \\ y2 \\ y3 \\ y4 \end{pmatrix} = 
+\begin{pmatrix} \beta_{i1} \\ \beta_{i2} \\ \beta_{j1} \\ \beta_{j2}  \end{pmatrix} 
+\begin{pmatrix} 1 & 0 & 1 & 0 \\
+                1 & 0 & 0 & 1 \\
+                0 & 1 & 1 & 0 \\
+                0 & 1 & 0 & 1 \end{pmatrix} + 
+\begin{pmatrix} \epsilon_{1} \\ \epsilon_{2} \\ \epsilon_{3} \\ \epsilon_{4} \end{pmatrix} $$
+\pause 
+\\hfill \\
+We can have as many groups as we need, so long as there is sufficient replication of each treatment combination.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The 'Treatment Contrast' Model for Multiway ANOVA/ANODEV}
+$$\boldsymbol{Y} = \boldsymbol{\beta X} + \boldsymbol{\epsilon} $$
+
+
+$$\begin{pmatrix} y1 \\ y2 \\ y3 \\ y4 \end{pmatrix} = 
+\begin{pmatrix} \beta_{0} \\ \beta_{i2} \\ \beta_{j2}  \end{pmatrix} 
+\begin{pmatrix} 1 & 0 & 0  \\
+                1 & 0 & 1  \\
+                1 & 1 & 0  \\
+                1 & 1 & 1  \end{pmatrix} + 
+\begin{pmatrix} \epsilon_{1} \\ \epsilon_{2} \\ \epsilon_{3} \\ \epsilon_{4} \end{pmatrix} $$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Hypotheses for Multiway ANOVA/ANODEV}
+TreatmentHo: $\mu_{i1} = \mu{i2} = \mu{i3} = ...$ \\ \hfill \\
+Block Ho: $\mu_{j1} = \mu{j2} = \mu{j3} = ...$
+\\ \hfill \\
+Remember, this can also be stated in terms of $\beta$
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Sums of Squares for Multiway ANOVA}
+Factors are Orthogonal and Balanced, so...\\
+\hfill \\
+\begin{itemize}
+ \item SST = SSA + SSB + SSR
+ \item F-Test using Mean Squares as Before
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Before we model it, make sure Block is a factor}
+<<zoop_factor>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Two-Way ANOVA as a Linear Model}
+<<zoop_lm>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Check Diagnostics}
+<<zoop_diag, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Residuals by Groups and No Non-Additivity}
+<<zoop_diag2, echo=FALSE, results='hide'>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Residuals by Groups and No Non-Additivity}
+Tukey's Test for Non-Additivity \\
+<<zoop_diag2, fig.keep="none">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The ANOVA}
+But first, what are the DF for...\\
+Treatment (with 3 levels) \\
+\hfill \\
+Block (with 5 blocks) \\
+\hfill \\
+
+Residuals (with n=15)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The ANOVA}
+<<zoop_anova>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Sums of Squares as Model Comparison}
+Testing SS for a Factor is the same as comparing the residual SS of a model with v. without that factor. \\
+\hfill \\
+Here is y = intercept versus y = intercept + treatment:
+<<ss_explained>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Sums of Squares as Model Comparison}
+Testing SS for a Factor is the same as comparing the residual SS of a model with v. without that factor. \\
+\hfill \\
+Here is y = intercept+treatment versus y = intercept + treatment+block:
+<<ss_explained2>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Sums of Squares as Model Comparison}
+Squential model building and SS Calculation is called {\emph Type I Sums of Squares}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Coefficients via Treatment Contrasts}
+<<zoop_summary>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Unique Effect of Each Treatment}
+<<zoop_cr, fig.height=6, fig.width=9, out.height="0.6\\textwidth", out.width="0.9\\textwidth">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Bees!}
+\begin{columns}
+\column{0.5\paperwidth}
+ \begin{itemize}
+  \item Load the Bee Gene Expresion Data
+  \item Does bee type or colony matter?
+  \item How much variation does this experiment explain?
+ \end{itemize}
+
+\column{0.5\paperwidth}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{./pics-19/BumbleBeeREX_468x362.jpeg}
+ \end{center}
+ \end{columns}
+
+<<load_bees, echo=FALSE, include=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bee ANOVA}
+<<bee_anova>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bee Effects}
+<<bee_crplot, fig.height=6, fig.width=9, out.height="0.6\\textwidth", out.width="0.9\\textwidth">>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge What if my data is unbalanced?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Unbalancing the Zooplankton Data}
+<<unbalance>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{An Unbalanced ANOVA}
+<<unbalanced_anova>>=
+@
+\pause
+Is this valid?  Can we use Type I sequential SS?
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Unbalanced Data and Type I SS}
+Missing "cells" (i.e., treatment-block combinations) mean that order matters in testing SS
+<<ss_explained2_unbalanced>>=
+@
+Intercept versus Treatment  and Block versus Treatment + Block will not produce different SS
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Unbalanced Data and Type I SS}
+<<ss_explained2_unbalanced2, echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Solution: Marginal, or Type II SS}
+SS of Block: Treatment versus Treatment + Block \\
+SS of Treatment: Block versus Block + Treatment \\
+\hfill \\
+Note: Because of marginality, the sum of all SS will no longer equal SST
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Solution: Marginal, or Type II SS}
+<<unbalanced_Anova>>=
+@
+Note the capital "A" - this is a function from the car package.
+\end{frame}
+
+
+\end{document}

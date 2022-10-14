@@ -1,0 +1,426 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 25  Hierarchical Models & Autocorrelation
+%%%   
+%%%
+%%% Last Modified 11/28/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\usepackage{colortbl}
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<setoptions, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_25.R")
+library(MASS)
+
+@
+
+<<lecture25prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Types of Multilevel Models}
+
+\huge Multilevel Models \& Timeseries Modeling
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Types of Multilevel Models}
+
+<<show_types, echo=FALSE, out.height="0.5\\textwidth", out.width="0.9\\textwidth", fig.width=9>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Variable Intercept Models Useful with Group Level Predictors}
+
+$$ y_{i} = \alpha_{j[i]} + \beta_{i}x_{i} + \epsilon_{ij} $$ \\
+\hfill \\
+$$\alpha_{j[i]}  \sim N(\mu_{\alpha} + x_{j}, \sigma_{\alpha}^{2})$$\\
+\hfill \\
+$$\epsilon_{ij} \sim N(0, \sigma^{2})$$\\
+\hfill \\
+where i = individual sample, j = group
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Each Site has a Unique Exposure - How does it Affect Species Richness?}
+\begin{center} \includegraphics[width=0.8\textwidth]{./pics-25/denmark-lightsbeach.jpeg}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Each Site has a Unique Exposure - How does it Affect Species Richness?}
+<<exposure_plot, echo=FALSE>>=
+@
+Data from Zuur et al. 2009
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A Variable Intercept Model for Wave Exposure}
+<<varInt>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Plot Fit Using Extracted Components}
+<<varInt_plot, eval=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Plot Fit Using Extracted Components}
+<<varInt_plot, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Plot Fit Using Extracted Components}
+<<varInt_plot2, eval=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Plotting is a Wee Bit Tricksy...}
+<<varInt_plot2, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Variable Slope-Intercept Model with No Group Level Predictors}
+$$ y_{i} = \alpha_{j[i]} + \beta_{[j]i}X + \epsilon_{ij} $$ \\
+\hfill \\
+$$\begin{pmatrix}
+\alpha_{[i]j}  \\  \beta_{[i]j}  \end{pmatrix} \sim N\left ( \begin{pmatrix} \mu_{\alpha}  \\  \mu_{\beta}  \end{pmatrix} ,  \begin{pmatrix}  \sigma_{\alpha}^{2}& \rho\sigma_{\alpha}\sigma_{\beta}\\ \rho\sigma_{\alpha}\sigma_{\beta} & \sigma_{\beta}^{2} \end{pmatrix}  \right )$$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{General Protocol for Model Fitting}
+Variable slope? Intercept?  Slope-Intercept?  Why do I evaluate Fixed Effects? \\
+\hfill \\
+\begin{enumerate}
+ \item Start with model with all fixed and random effects that may be important.  Evaluate with diagnostics.
+ \item Evaluate random effects with full model of fixed effects (AIC, $\chi^2$)
+ \item Evaluate fixed effects with reduced random effects (F Tests)
+ \item Model diagnostics again...
+ \item Draw inference from model
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{How Important is Tide Height?}
+<<NAP_plot, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Three Models with Different Random Effects}
+<<variable-slope-intercept_1>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Does Slope Vary Randomly?}
+<<variable-slope-ranef>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{SD in Variable Slope Model is Small}
+<<variable-slope-summary, out.lines=6:10>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Evaluation of Different Random Effects Models}
+<<compare_ranef_vsi>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Evaluation of Fixed Effects}
+<<eval_fixed_vsi>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Final Model}
+<<variable-slope-intercept_plot, echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: RIKZ Tide Height and Shoreline Angle}
+\begin{itemize}
+ \item Evaluate the effect of angle1 (sample angle) \& NAP on Richness
+ \item Note: You already know the slope of the NAP relationship doesn't vary randomly
+ \item Check for a NAP*angle1 interaction
+\end{itemize} 
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{nlme versus lme4}
+\begin{itemize}
+ \item nlme - can work like nls for flexible nonlinear specification
+ \item nlme - can accomodate specified correlation structures
+ \item lmer - can fit more complex models
+ \item lmer - can fit Generalized Linear Mixed Models (GLMM)
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{lmer for a GLMM}
+<<lmer_ang>>=
+@
+F Tests for GLMMs not yet implemented...
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Modeling Error Structures with Generalized Least Squares}
+$$Y = \beta X + \epsilon$$
+Mixed models can handle clustered data, but what about other violations assumptions about $\epsilon$?\\
+1) Error variance is not constant \\
+2) Error is temporally or spatially autocorrelated \\ 
+\pause \hfill \\
+{\bf Generalized Least Squares} -  (of which OLS is a special case)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What's in that Epsilon?}
+
+$$\epsilon \sim N(0, \sigma^2)$$ \\
+\pause \hfill \\
+if n=3...\\
+$$\epsilon \sim N\left ( 0, \begin{pmatrix}
+\sigma^2 & 0 &0 \\ 
+0 &  \sigma^2& 0\\ 
+0 & 0 & \sigma^2
+\end{pmatrix} \right )$$ \\
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What if $sigma^2$ is not Constant?}
+
+$$\epsilon \sim N\left ( 0, \begin{pmatrix}
+\sigma^2 & 0 &0 \\ 
+0 &  \sigma^2& 0\\ 
+0 & 0 & \sigma^2
+\end{pmatrix} \right )$$ for n=3\\ \hfill \\
+
+Commonly, we weight by 1/SD of a response variable when we know something about measurement precision.  E.g. in R {\tt lm(y$\sim$x, weight=1/sd(y))}.  Other options include modeling $\sigma^2$ explicitly as a response. In R we use {\tt varFixed} or other functions in conjunction with the {\tt weights} argument with gls or lme.  
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{What if the off diagonals are not 0?}
+
+$$\epsilon \sim N\left ( 0, \begin{pmatrix}
+\sigma^2 & 0 &0 \\ 
+0 &  \sigma^2& 0\\ 
+0 & 0 & \sigma^2
+\end{pmatrix} \right )$$ \\
+\hfill \\
+\begin{itemize}
+
+ \item Temporal or Physical distance between sampling points can induce correlation between data points.
+ \item If we have measured EVERY relevant variable, we may account for this, but not always.
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Enter Repeated Measures \& Time Series}
+<<bird_ts_plot, echo=FALSE>>=
+@
+
+Data from Zuur et al. 2009
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{If this was Just Repeated Measures...}
+<<bird_repeated>>=
+@
+No temporal autocorrelation.  No effect of time.\\
+Assumes variation in time is purely random.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But, We Want to Look for a Temporal Trend}
+<<bird_ts_fit>>=
+@
+Note: Time could have had a nonlinear effect, could have interacted with Rainfall, and could have been a factor if we didn't want to assume a functional form to the time effect.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Temporal Autocorrelation in the Residuals}
+<<bird_ts_fit_resid, echo=FALSE>>=
+@
+Need to examine cor($X, X_t-\tau$) to be certain.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Autocorrelation of Residuals}
+<<bird_ts_fit_acf>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We Must Incorporate Autcorrelation into $\epsilon$}
+$$cor(\epsilon) \sim N\left ( 0, \begin{pmatrix}
+1 & 0 &0 \\ 
+0 &  1& 0\\ 
+0 & 0 & 1
+\end{pmatrix} \right )$$ \\
+\hfill \\
+
+Alternatives? \pause \\  \hfill \\
+$$\epsilon \sim N\left ( 0, \begin{pmatrix}
+1 & \rho &\rho \\ 
+\rho &  1& \rho\\ 
+\rho & \rho & 1
+\end{pmatrix} \right )$$ \\
+\hfill \\
+Compound Symmetric Structure - often too simple
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Autoregressive Error Structure - AR1}
+$$\epsilon_{t} = \rho \epsilon_{t-1} + \zeta_{t}$$ \\
+\hfill \\ which produces \\
+$$\epsilon \sim N\left ( 0, \begin{pmatrix}
+1 & \rho &\rho^{2} \\ 
+\rho &  1& \rho\\ 
+\rho^{2} & \rho & 1
+\end{pmatrix} \right )$$ \\ for n=3 time steps
+\hfill \\
+Other structures as well (AutoRegressive Moving Average, etc.)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Implementing an AR1 Structure with the Birds Time Series}
+<<bird_ts_fit_AR1>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Does AR1 Improve Fit?}
+<<bird_ts_fit_compare1>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{But - SS of Predictors Decreased}
+<<bird_ts_fit_compare1>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Predictions Capture Major Trend...}
+<<bird_fit_plot, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Predictions Capture Major Trend...}
+<<bird_fit_plot, eval=FALSE, out.lines=1:2>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Model DIN, DIP, or CHLFa in the Plankton Data Set}
+<<plankton_plot, echo=FALSE>>=
+@
+How well can you model the time series with the measurements at hand?
+{\scriptsize Data extrapolated from Zuur et al. 2009\\}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Example: DIN ~ T + SAL + Year}
+<<Plankton_models>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Variable Slope Intercept Model}
+<<Plankton_modselect1>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{All Predictors Important}
+<<Plankton_evaluate, out.lines=13:24>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{All Predictors Important}
+<<plankton_plot_fit, echo=FALSE>>=
+@
+\end{frame}
+\end{document}

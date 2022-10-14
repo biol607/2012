@@ -1,0 +1,393 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 28  The End?
+%%%   
+%%%
+%%% Last Modified 12/4/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\usepackage{colortbl}
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<setoptions, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+#read_chunk("./lecture_27.R")
+library(MASS)
+library(car)
+library(plyr)
+library(ggplot2)
+
+@
+
+%<<lecture27prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+%@
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\begin{center}
+\begin{Large} The End of the Beginning\end{Large}
+\end{center}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{First, Centering}
+Let's say you're going along blisfully with your multiple linear regression...
+<<warning=FALSE>>=
+plankton <- read.csv("./data/planktonSummary.csv")
+#
+library(car)
+alm <- lm(DIN ~ SAL*T, data=plankton)
+
+@
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{First, Centering}
+Suddenly...
+<<>>=
+vif(alm)
+@
+\pause
+<<>>=
+cor(plankton$T, plankton$T*plankton$SAL)
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Centering Before Nonlinear Transformation Reduces Variance Inflation}
+Suddenly...
+<<>>=
+cent <- function(x) x-mean(x)
+
+plankton$int <- with(plankton, cent(SAL) * cent(T))
+
+alm2 <- lm(DIN ~ SAL + T + int, data=plankton)
+vif(alm2)
+@
+\pause
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Interpretation Changes}
+<<echo=FALSE>>=
+summary(alm2)$coef
+@
+Additive coefficients are evaluated at mean level of each other.
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\Large Where to from Here?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Never Stop Reading}
+\begin{itemize}
+  \item \url{http://www.r-bloggers.com/}
+  \item \url{http://andrewgelman.com/}
+  \item \url{http://masi.cscs.lsa.umich.edu/~crshalizi/weblog/}
+  \item \emph{Methods in Ecology \& Evolution}
+  \item \emph{Significance}
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Meta-Analysis}
+\begin{columns}
+\column{0.5\paperwidth}
+\includegraphics[width=1\textwidth]{./pics-28/meta-analysis.jpeg}
+\column{0.5\paperwidth}
+The analysis of results from previous studies - summarizes information to get a grand answer to big questions
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Time \& Space}
+\begin{columns}
+\column{0.5\paperwidth}
+\includegraphics[width=0.95\textwidth]{./pics-28/timeseries.jpeg}
+\column{0.5\paperwidth}
+A whole different set of consideration in thinking about correlation structure in complex spatial and temporal landscapes
+\end{columns}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Zero Inflated or Censored Models}
+\begin{columns}
+\column{0.5\paperwidth}
+\includegraphics[width=0.95\textwidth]{./pics-28/zero_infl.jpeg}
+\column{0.5\paperwidth}
+What if you have a LOT of zeroes...but otherwise things look Poisson, Negative Binomial, Normal, or more.  What about censored data where an instrument only reads so high or low?
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Generalized Additive Models}
+\begin{columns}
+\column{0.5\paperwidth}
+\includegraphics[width=0.9\textwidth]{./pics-28/gam.jpeg}
+\column{0.5\paperwidth}
+<<echo=FALSE, warning=FALSE, out.width="1\\textwidth", out.height="0.714\\textwidth">>=
+qplot(SAL, T, data=plankton) + stat_smooth(method="loess")
+@
+\end{columns}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Multivariate Methods}
+
+\begin{columns}
+\column{0.5\paperwidth}
+\includegraphics[width=0.95\textwidth]{./pics-28/numerical_ecology.png}
+\column{0.5\paperwidth}
+What if you have MANY response variables?  Structural Equation Modeling, Clustering, NDMS, and more!
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bayesian Methods}
+
+\begin{columns}
+\column{0.5\paperwidth}
+\includegraphics[width=0.95\textwidth]{./pics-28/bayesian.jpeg}
+\column{0.5\paperwidth}
+A different kind of inference with a huge amount of flexibility. 
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Digging into Causality}
+
+\begin{columns}
+\column{0.5\paperwidth}
+\includegraphics[width=0.95\textwidth]{./pics-28/causality2-cover.jpeg}
+\column{0.5\paperwidth}
+What is causal inference?  When can we draw causal conclusions?
+\end{columns}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\Large Closing Thoughts
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% Course Goals
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Course Goals}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+  \item{Learn how to think about your research 
+in a systematic way to design efficient observational \& experimental studies.}
+  \hfill \\
+  \hfill \\
+  
+  \item{Understand how to get the most bang for your buck from your data.}
+  \hfill \\
+  \hfill \\
+
+  \item{Make you effective collaborators with statisticians.}
+  \hfill \\
+  \hfill \\
+
+  \item{Make you comfortable enough to learn and grow beyond this class.}
+  \hfill \\
+  \hfill \\
+
+\end{enumerate}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\Large We Are Fitting Models
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Think Causally - When you Can}
+Does X Influence Y? \\
+Might X and Y be influences by a common cause? \\
+How can we design a study to cleanly determine the relationship/effect between X and Y?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We're Just Fitting a Curve with an Error Distribution}
+ \begin{center}Y $\sim$ D( F(X) )\\ \hfill \\
+ Y = $\beta$X + $\epsilon_i$ 
+ \end{center}
+ 
+\hfill \\
+\begin{itemize}
+ \item F(X) can take many forms
+ \item D, $\epsilon_i$ need not just be normal.
+ \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We're Just Fitting a Curve with an Error Distribution}
+<<echo=FALSE>>=
+qplot(T, DIN, data=plankton) + stat_smooth(method="lm", color="red") + theme_bw()
+@
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We're Just Fitting a Curve with an Error Distribution}
+<<echo=FALSE>>=
+qplot(T, DIN, data=plankton) + stat_smooth(method="glm", color="red", family=gaussian(link="log")) + theme_bw()
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{We're Just Fitting a Curve with an Error Distribution}
+<<echo=FALSE>>=
+adf <- predict(glm(DIN ~ T, data=plankton, family=Gamma(link="log")), newdata=data.frame(T=seq(-1,25,.1)), interval="prediction", se.fit=T, type="response")
+lwr <- qgamma(0.025, scale=adf$residual.scale, shape=adf$fit/adf$residual.scale)-adf$se.fit
+upr <- qgamma(0.975, scale=adf$residual.scale, shape=adf$fit/adf$residual.scale)+adf$se.fit
+adf <- data.frame(adf)
+adf$T <- seq(-1,25,.1)
+adf$DIN <- adf$fit
+qplot(T, DIN, data=plankton)  + theme_bw() +
+  geom_ribbon(data=adf, mapping=aes(x=T, y=DIN, ymin=lwr, ymax=upr), col="grey", alpha=0.2)+ 
+  stat_smooth(method="glm", color="red", family=Gamma(link="log"), fill=NA)
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Moving Beyond Simple Error Structures}
+ \begin{center} $ y_{i} = \alpha_{j[i]} + \beta_{[j]i}X + \epsilon_{ij} $ \end{center}
+\hfill \\
+\pause
+$$cor(\epsilon) = \begin{pmatrix}
+1 & \rho &\rho \\ 
+\rho &  1& \rho\\ 
+\rho & \rho & 1
+\end{pmatrix} $$ \\ 
+\hfill \\ And this is just a start!
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\Large Think About What You Are Doing
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Think About What You Are Doing}
+\begin{center} \includegraphics[height=0.95\textheight]{./pics-28/Untitled.png} \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Think \emph{a priori}}
+I think that Y is predicted by...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Consider Your Mode of Inference}
+Am I testing a null hypothesis?  Why? \\ \hfill \\
+Do I want to evaluate the relative weight of evidence for multiple hypotheses? \\ \hfill \\
+Do I have prior information?  Do I want to know about my degree of belief? \\ \hfill \\
+Can I even make parameteric assumptions about relationships?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exploration and Verification are Both Valid}
+Let's go and build a model v. Let's test a single predictive framework
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Sample Size}
+\begin{itemize}
+ \item How many points to fit a probability distribution?
+ \item Ensure that your effect is not a fluke accident
+ \item $\frac{p^{3/2}}{n}$ should approach 0 for Likelihood (Portnoy 1988 Annals of Statistics)
+ \item i.e.,$\sim$10 samples per paramter (1 treatment = 1 parameter, but this is total \# of samples)
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\Large Computational Tools Are Just That - Tools!
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Coding Brings You Closer to Your Model}
+Which helps you understand the model you are fitting better?
+\pause
+Select the Model Menu.  Select General Linear Model.  Click Y as your response.  Then click X and your predictor.  Click Block.  Scroll to a second menu.  Select random effects model, and click Block again.  Click Run. \\ \hfill \\
+\pause
+<<eval=FALSE>>=
+lme(Y ~ X, random=~ 1|Block, data=mydata)
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Screen Your Data}
+<<echo=FALSE>>=
+plot(SAL ~ T, data=plankton)
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Visualize Your Work}
+<<echo=FALSE>>=
+pred <- data.frame(expand.grid(SAL = quantile(plankton$SAL), T=quantile(plankton$T)))
+pred$DIN <- predict(alm, newdata=pred)
+qplot(SAL, DIN, data=pred, geom="line", color=T, group=T) + theme_bw() 
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+It is likely that no one ever masters anything in which he has not known impotence; and if you agree, you will see that this impotence comes not at the beginning of or before the struggle with the subject, but at the heart of it.\\
+\hfill \\
+- Walter Benjamin
+\end{frame}
+
+
+\end{document}

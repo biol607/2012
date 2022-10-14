@@ -1,0 +1,347 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Lecture 18 - ANOVA
+%%%   
+%%%
+%%% Last Modified 10/31/2012
+%%%
+%%% Changelog:
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\input{handoutPreamble.Rnw} %for when we use the handout argument for documentclass
+\input{slidePreamble.Rnw}
+
+%%%%%load in code chunks, and run some preperatory code
+<<set-options, echo=FALSE, cache=FALSE, include=FALSE>>=
+source("./beamerPrep.R")
+read_chunk("./lecture_18.R")
+
+opts_chunk$set(size = "footnotesize")
+opts_chunk$set(fig.align = "center")
+opts_chunk$set(out.height="0.55\\textwidth")
+opts_chunk$set(out.width="0.55\\textwidth")
+opts_chunk$set(fig.height=5)
+opts_chunk$set(fig.width=5)
+opts_chunk$set(tidy=FALSE)
+opts_chunk$set(prompt=FALSE)
+opts_chunk$set(warning=FALSE)
+opts_chunk$set(comment="#")
+
+par(mar=c(5,4,2,2))
+@
+
+<<lecture18prep, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+<<load_anova_data, echo=FALSE, cache=FALSE, include=FALSE>>=
+@
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\huge After the ANOVA
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Categorical Predictors: Gene Expression and Mental Disorders}
+\begin{center}
+ \includegraphics[width=0.3\textwidth]{./pics-17/neuron_label.jpeg}
+ \includegraphics[width=0.4\textwidth]{./pics-17/myelin.jpeg} \\
+\end{center}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Data}
+<<brainGene_plot, echo=FALSE>>=
+@
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Fit the Data with a Linear Model}
+<<brainGene_lm, size="small">>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{F-Test to Compare Variation Within versus Between Groups}
+
+$SS_{Total} = SS_{Between} + SS_{Within}$ \\ 
+
+\begin{center}
+$SS_{Between} = \sum_{i}\sum_{j}(\bar{Y_{i}} - \bar{Y})^{2}$, df=k-1\\ \hfill \\
+$SS_{Within} = \sum_{i}\sum_{j}(Y_{ij} - \bar{Y_{i}})^2$, df=n-k\\ \hfill \\
+
+\end{center}
+\pause
+MS = SS/DF, e.g, $MS_{W} = \frac{SS_{W}}{n-k}$\\
+\hfill \\
+
+\begin{center}$F = \frac{MS_{B}}{MS_{W}}$ with DF=k-1,n-k \\ \end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ANOVA}
+<<brainGene_anova>>=
+@
+\pause
+Which groups are different from one another?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Data}
+<<brainGene_plot, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Coefficients}
+<<brainGene_lm_summary>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Default "Treatment" Contrasts}
+<<brainGene_contrasts>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Coefficients}
+<<brainGene_lm_summary_noint>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\large OK, but WHICH GROUPS ARE DIFFERENT?
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ANOVA is an Omnibus Test}
+Remember your Null: \\
+$$H_{0} = \mu_{1} = \mu{2} = \mu{3} = ...$$ \\
+\hfill \\
+This had nothing to do with specific comparisons of means.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A priori contrasts}
+Specific sets of {\emph a priori} null hypotheses:
+$$\mu_{1} = \mu{2}$$\\ 
+$$\mu_{1} = \mu{3} = ...$$ \\
+\hfill \\
+Use t-tests.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A priori contrasts}
+<<contrast1, warning=FALSE, message=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{A priori contrasts}
+<<contrast2>>=
+@
+\pause Note: can only do k-1, as each takes 1df
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{The Data}
+<<brainGene_plot_grouped, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Orthogonal A priori contrasts}
+Sometimes you want to test very specific hypotheses about the structure of your groups
+<<ortho1, echo=FALSE, message=FALSE, warning=TRUE>>=
+@
+\pause Note: can only do k-1, as each takes 1df
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Orthogonal A priori contrasts with multcomp}
+<<ortho2, eval=FALSE>>=
+@
+\pause Note adjusted p-value is set to none...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Orthogonal A priori contrasts}
+<<ortho2, echo=FALSE>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Post hoc contrasts}
+\large I want to test all possible comparisons!  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Post hoc contrasts}
+\begin{large} Only to be done if you reject Ho\end{large}
+\pause
+\begin{itemize}
+ \item All possible comparisons via t-test
+ \item But...with many comparisons, does type I error rate increase?
+ \pause
+ \hfill \\
+ 
+ \item Consider adjusted alpha
+ \item But, adjusting alpha also may increase type II error rate!
+ \pause
+ \hfill \\
+ 
+ \item Additional multiple comparison methods calulate family-wise critical values of differences.
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{All Possible T-Tests}
+<<pairwiseT>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{P-Value Adjustments}
+Bonferroni : $\alpha_{adj} = \frac{\alpha}{m}$ where m = \# of tests \\
+- VERY conservative \\
+\pause
+\hfill \\
+False Discovery Rate: $\alpha_{adj} = \frac{k\alpha}{m}$ \\
+- Order your p values from smallest to largest, rank = k, \\  
+- Adjusts for small v. large p values \\
+- Less conservative \\
+\pause
+\hfill \\
+Other Methods: Sidak, Dunn, Holm, etc. \\
+\pause We're very focused on p here!
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Bonferroni Correction}
+<<pairwiseT_bonferroni>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{False Discovery Rate}
+<<pairwiseT_fdr>>=
+@
+\end{frame}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Other Methods Use Critical Values}
+\begin{itemize}
+ \item Tukey's Honestly Significant Difference
+ \item Dunnet's Test for Comparison to Controls
+ \item Ryan's Q (sliding range)
+ \item etc...
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Tukey Test}
+<<Tukey>>=
+@
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Final Notes of Caution}
+\begin{itemize}
+ \item Often you DO have a priori contrasts in mind
+ \item If you reject Ho with ANOVA, differences between groups exist
+ \item Consider Type I v. Type II error before correcting
+\end{itemize}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Exercise: Daphnia Resistance}
+ \begin{columns}
+ \column{0.5\paperwidth}
+ \begin{itemize}
+  \item Fit an ANOVA
+  \item Which groups are different? 
+ \end{itemize}
+ 
+ \column{0.5\paperwidth}
+   \includegraphics[width=0.8\textwidth]{./pics-17/daphnia500.jpeg}\\
+
+
+ \end{columns}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Daphnia Data}
+<<daphnia_load, echo=FALSE>>=
+@
+<<daphnia_plot_2, echo=FALSE>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{ANOVA shows an Effect}
+<<daphnia_anova>>=
+@
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{High and Med Not Different}
+<<daphnia_glht>>=
+@
+\end{frame}
+
+\end{document}
