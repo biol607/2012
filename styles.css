@@ -1,0 +1,124 @@
+
+
+body { 	background: white;
+		color:	black;
+		font-family: Arial, Helvetica, sans-serif;
+		}
+
+table { background: inherit;
+		color: inherit;
+		}
+
+a { color: orangered;
+	font-family: inherit;
+        border: 0;
+        text-decoration: none;
+        }
+ a:hover {color:orange; 
+ 		  text-decoration:none;}
+
+img { border: 1px solid; 
+		margin: 2px 2px 2px 2px;}
+
+div#titles{ background: white;
+	float: left;
+	text-transform: uppercase;
+	font-size: 40;
+	}
+
+#subtitle{ font-size: 20;
+			text-transform: uppercase;
+		}
+
+div#contentbox{ background: white;
+			float: right;
+			position: absolute;
+			top: 80px;
+			left: 28%;
+			width: 640px;
+			border: 1px dashed;
+			border-radius: 8px;
+			padding: 2px 4px 0px 4px;
+
+			}
+
+div#linkbar { background: white;
+			position: absolute;
+			top: 80px;
+			left: 20px;
+			float: left;
+			width: 25%;
+			height: 130%;
+			color: black;
+			font: inherit;
+			padding-top: 10px;
+			padding-left: 4px;
+			font-weight: bold;
+			text-transform: uppercase;
+
+		}
+
+ div#linksub { color: orangered;
+ 			padding-left: 3px;
+ 			margin: 2px 4px 0px 4px;
+ 			font-weight: normal;
+ 			text-transform: none;
+ 			font-size: 9pt;
+ 		  }
+ 		  
+div.bdefcontent{ width:550px; 
+				margin-left: auto; 
+				margin-right:auto;
+        	}
+        	
+.contentlinxbox { background: white;
+			margin-top: 5px;
+			border: 1px orangered solid;
+			padding: 3px;
+			font-size:10pt;
+			position: relative;
+			top:5px;
+			border-radius: 8px;
+			}
+
+.contentlinxbox:hover{background:  whitesmoke;
+			} 
+
+.linkbar a:hover {	color: yellow;
+        		background: inherit;
+			}
+
+.littlelink { color: inherit;
+			  position: relative;
+			  left: 0px;
+			  font-weight: normal;
+			  font-size: 8pt;
+			  border-top: 0px;
+			  }
+
+.littlelink a{ font-weight: normal;
+		background: inherit;}
+			  
+.bottom {position: relative;
+		top: 50px;
+		padding: 2em;
+		width: 90%;
+		}
+
+		 
+i {font-style: italic;
+	font-family: inherit;
+	}
+	
+		 
+.contenttext {	
+			position: relative;
+			top: 50px;
+			background: inherit;
+			color: inherit;
+			font-family: inherit;
+
+		 }
+		 
+		 
+		
